@@ -1,0 +1,57 @@
+services:
+  db:
+    image: postgres:16
+    container_name: postgres_onebyone
+    ports:
+      - "54320:5432"
+    volumes:
+      - ./db:/var/lib/postgresql/data
+    env_file:
+      - .env
+    environment:
+      TZ: ${TZ}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d ${POSTGRES_DB} -U ${POSTGRES_USER}"]
+      interval: 10s
+      timeout: 2s
+      retries: 10
+    restart: unless-stopped
+    
+  backend:
+    container_name: backend_onebyone
+    build:
+      context: ./backend
+      dockerfile: ./Dockerfile
+    command: bash -c "python manage.py runserver 0.0.0.0:8000"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app/backend
+      - ./backend/staticfiles:/app/backend/staticfiles
+      - ./backend/mediafiles:/app/backend/mediafiles
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+
+  frontend:
+    container_name: react_onebyone
+    build: 
+      context: ./frontend
+      dockerfile: ./Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+      - WATCHPACK_POLLING=true
+    depends_on:
+      - backend
+    command: npm start
+
+volumes:
+  postgres_data:
