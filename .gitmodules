@@ -1,6 +1,6 @@
-[submodule "frontend"]
-	path = frontend
+[submodule "onebyone-frontend"]
+	path = onebyone-frontend
 	url = https://github.com/ykh9871/onebyone-frontend.git
-[submodule "backend"]
-	path = backend
+[submodule "onebyone-backend"]
+	path = onebyone-backend
 	url = https://github.com/ykh9871/onebyone-backend.git
