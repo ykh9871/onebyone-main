@@ -20,15 +20,15 @@ services:
   backend:
     container_name: backend_onebyone
     build:
-      context: ./backend
+      context: ./onebyone-backend
       dockerfile: ./Dockerfile
     command: bash -c "python manage.py runserver 0.0.0.0:8000"
     ports:
       - "8000:8000"
     volumes:
-      - ./backend:/app/backend
-      - ./backend/staticfiles:/app/backend/staticfiles
-      - ./backend/mediafiles:/app/backend/mediafiles
+      - ./onebyone-backend:/app/backend
+      - ./onebyone-backend/staticfiles:/app/backend/staticfiles
+      - ./onebyone-backend/mediafiles:/app/backend/mediafiles
     depends_on:
       db:
         condition: service_healthy
@@ -38,12 +38,12 @@ services:
   frontend:
     container_name: react_onebyone
     build: 
-      context: ./frontend
+      context: ./onebyone-frontend
       dockerfile: ./Dockerfile
     ports:
       - "3000:3000"
     volumes:
-      - ./frontend:/app
+      - ./onebyone-frontend:/app
       - /app/node_modules
     environment:
       - NODE_ENV=development
