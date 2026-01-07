@@ -5,6 +5,7 @@
 - **프로젝트명**: OneByOne Studio 웹사이트
 - **구조**: React Frontend + Django DRF Backend + Docker
 - **Git 방식**: Submodule (메인 저장소에서 frontend/backend 연결)
+- **상태**: 프론트엔드 완성 ✅ / 백엔드 개발 예정 ⏳
 
 ### Git 저장소
 ```
@@ -21,59 +22,63 @@ Main: https://github.com/ykh9871/onebyone-main.git
 frontend/
 ├── public/
 │   ├── index.html
+│   ├── models/
+│   │   └── submarine.glb              # 3D 모델 파일
 │   ├── videos/
-│   │   ├── whatwedo-bg.mp4          # What We Do 섹션 배경 영상
-│   │   ├── slogan-bg.mp4            # Slogan 섹션 배경 영상
-│   │   └── lab/                     # Lab 페이지 영상들
+│   │   ├── whatwedo-bg.mp4            # What We Do 섹션 배경 영상
+│   │   ├── slogan-bg.mp4              # Slogan 섹션 배경 영상
+│   │   └── lab/                       # Lab 페이지 영상들
 │   ├── images/
-│   │   ├── category/                # 카테고리 썸네일
-│   │   │   ├── media-art.jpg
-│   │   │   ├── interactive.jpg
-│   │   │   ├── exhibition.jpg
-│   │   │   └── web.jpg
-│   │   ├── portfolio/               # 포트폴리오 이미지들
-│   │   └── lab/                     # Lab 페이지 이미지들
+│   │   ├── category/                  # 카테고리 썸네일
+│   │   ├── portfolio/                 # 포트폴리오 이미지들
+│   │   └── lab/                       # Lab 페이지 이미지들
 │   └── files/
-│       └── company-profile.pdf      # 회사 소개서
+│       └── company-profile.pdf        # 회사 소개서
 │
 ├── src/
-│   ├── index.js                     # React 진입점
-│   ├── index.css                    # 글로벌 스타일 (Tailwind directives)
-│   ├── App.js                       # 라우팅 설정
+│   ├── index.js                       # React 진입점
+│   ├── index.css                      # 글로벌 스타일 (Tailwind directives)
+│   ├── App.jsx                        # 라우팅 설정
 │   ├── App.css
 │   │
 │   ├── assets/
-│   │   ├── logo.avif                # 메인 로고 (파티클용)
-│   │   └── smallLogo.avif           # 네비게이션 로고
+│   │   ├── logo.avif                  # 메인 로고 (파티클용)
+│   │   └── smallLogo.avif             # 네비게이션 로고
 │   │
 │   ├── components/
-│   │   ├── index.js                 # 컴포넌트 통합 export
-│   │   ├── Navbar.jsx               # 네비게이션 바 + 풀스크린 메뉴
-│   │   ├── Footer.jsx               # 푸터
-│   │   ├── PageTransition.jsx       # 페이지 전환 효과 (눈 깜빡임)
-│   │   ├── ScrollToTop.jsx          # 페이지 이동 시 스크롤 최상단
-│   │   ├── CategoryLayout.jsx       # 카테고리 페이지 공통 레이아웃 ✅ 완료
+│   │   ├── index.js                   # 컴포넌트 통합 export
+│   │   ├── Navbar.jsx                 # 네비게이션 바 + 풀스크린 메뉴
+│   │   ├── Footer.jsx                 # 푸터
+│   │   ├── PageTransition.jsx         # 페이지 전환 효과 (눈 깜빡임)
+│   │   ├── ScrollToTop.jsx            # 페이지 이동 시 스크롤 최상단
+│   │   ├── CategoryLayout.jsx         # 카테고리 페이지 공통 레이아웃
 │   │   │
-│   │   └── home/                    # 홈 페이지 섹션 컴포넌트
+│   │   ├── about/
+│   │   │   ├── index.js
+│   │   │   └── LandingSection.jsx     # About 파티클 로고 효과
+│   │   │
+│   │   └── home/
 │   │       ├── index.js
-│   │       ├── LandingSection.jsx   # 파티클 로고 효과
-│   │       ├── WhatWeDoSection.jsx  # 배경 영상 + 텍스트
-│   │       ├── PortfolioSection.jsx # 카테고리 슬라이드인
-│   │       ├── SloganSection.jsx    # 배경 영상 + 슬로건
-│   │       └── ContactSection.jsx   # 연락처 + 복사 기능
+│   │       ├── LandingSection.jsx     # 파티클 로고 효과
+│   │       ├── ThreeDSection.jsx      # 3D 모델 섹션 (PC/모바일 반응형) ✅ NEW
+│   │       ├── MobileThreeDSection.jsx # 모바일용 3D 섹션 (별도 파일) ✅ NEW
+│   │       ├── WhatWeDoSection.jsx    # 배경 영상 + 텍스트
+│   │       ├── PortfolioSection.jsx   # 카테고리 슬라이드인
+│   │       ├── SloganSection.jsx      # 배경 영상 + 슬로건
+│   │       └── ContactSection.jsx     # 연락처 + 복사 기능
 │   │
 │   └── pages/
-│       ├── index.js                 # 페이지 통합 export
-│       ├── Home.jsx                 # 메인 페이지
-│       ├── About.jsx                # 소개 페이지
-│       ├── Portfolio.jsx            # 포트폴리오 전체 ✅ 완료
-│       ├── PortfolioDetail.jsx      # 포트폴리오 상세 ✅ 완료
-│       ├── Lab.jsx                  # 랩 페이지 ✅ 완료
-│       ├── Contact.jsx              # 연락처 페이지 ✅ 완료
-│       ├── MediaArt.jsx             # 카테고리: 미디어아트
-│       ├── Interactive.jsx          # 카테고리: 인터랙티브
-│       ├── Exhibition.jsx           # 카테고리: 전시
-│       └── Web.jsx                  # 카테고리: 웹
+│       ├── index.js                   # 페이지 통합 export
+│       ├── Home.jsx                   # 메인 페이지 (6개 섹션)
+│       ├── About.jsx                  # 소개 페이지
+│       ├── Portfolio.jsx              # 포트폴리오 전체
+│       ├── PortfolioDetail.jsx        # 포트폴리오 상세
+│       ├── Lab.jsx                    # 랩 페이지
+│       ├── Contact.jsx                # 연락처 페이지
+│       ├── MediaArt.jsx               # 카테고리: 미디어아트
+│       ├── Interactive.jsx            # 카테고리: 인터랙티브
+│       ├── Exhibition.jsx             # 카테고리: 전시
+│       └── Web.jsx                    # 카테고리: 웹
 │
 ├── tailwind.config.js
 ├── postcss.config.js
@@ -87,8 +92,8 @@ frontend/
 
 | 경로 | 페이지 | 설명 | 상태 |
 |------|--------|------|------|
-| `/` | Home | 메인 페이지 (5개 섹션) | ✅ 완료 |
-| `/about` | About | 회사 소개 | ⏳ TODO |
+| `/` | Home | 메인 페이지 (6개 섹션) | ✅ 완료 |
+| `/about` | About | 회사 소개 | ✅ 완료 |
 | `/portfolio` | Portfolio | 포트폴리오 전체 | ✅ 완료 |
 | `/portfolio/:id` | PortfolioDetail | 포트폴리오 상세 | ✅ 완료 |
 | `/lab` | Lab | 실험실/랩 | ✅ 완료 |
@@ -100,7 +105,7 @@ frontend/
 
 ---
 
-## 🏠 메인 페이지 (Home) 5개 섹션
+## 🏠 메인 페이지 (Home) 6개 섹션
 
 ### 1. LandingSection (파티클 로고)
 - 높이: 250vh (스크롤 범위 확장)
@@ -109,326 +114,123 @@ frontend/
 - 마우스 호버 시 파티클 밀어내기 효과
 - sticky로 화면 고정
 
-### 2. WhatWeDoSection
-- 배경 영상 루핑 (`whatwedo-bg.mp4`)
-- 페이드인 텍스트 애니메이션
+### 2. ThreeDSection (3D 모델) ✅ NEW
+- 높이: 100vh
+- GLB 3D 모델 (`/models/submarine.glb`) 로드
+- **PC/모바일 반응형 분기** (768px 기준)
 
-### 3. PortfolioSection
-- "PORTFOLIO" 글자별 순차 애니메이션 (한 글자씩 아래에서 위로)
-- 4개 카테고리 카드 (우측에서 슬라이드인)
-- 카테고리: MEDIA ART, INTERACTIVE, EXHIBITION, WEB
-- 이미지 비율: 16:9 (aspect-video)
-- 각 카드 클릭 시 해당 카테고리 페이지로 이동
+**PC 버전**:
+- 중앙 모델: 마우스 따라 바라봄 + 두둥실 애니메이션
+- 주변 6개 모델: 원형 배치 (x-y 평면)
+- 좌클릭: 팝업 열기
+- 우클릭 드래그: 모델 Y축 회전
+- 마우스 스포트라이트 효과
+- 배경 파티클 효과
+- 호버 시 글로우 + 라벨 표시
 
-### 4. SloganSection
-- 배경 영상 루핑 (`slogan-bg.mp4`)
-- 라인별 슬라이드인 텍스트
+**모바일 버전**:
+- 단일 3D 모델 표시 (자동 회전)
+- 좌우 스와이프로 프로젝트 전환
+- 좌우 네비게이션 버튼
+- 하단 페이지 인디케이터
+- 탭하여 팝업 열기
 
-### 5. ContactSection
-- 제목: "Where Art and Technology Converge, Without Boundaries"
-- 부제: "예술과 기술의 융합을 통해 미디어아트와 인터렉션 아트를 경계없이 창조합니다"
-- 회사 소개서 다운로드 버튼
-- 연락처 정보 (E-mail, OFFICE, PHONE) + 클릭 시 복사 기능
-- Contact Us → 버튼 (Contact 페이지로 이동)
-
----
-
-## 📄 완료된 페이지 상세
-
-### 1. CategoryLayout.jsx
-**위치**: `src/components/CategoryLayout.jsx`
-
-**기능**:
-- 카테고리별 포트폴리오 그리드 (미디어아트, 인터랙티브, 전시, 웹)
-- 3열 그리드 (모바일 1열), 카드 간격 있음 (`gap-4 md:gap-5 lg:gap-6`)
-- 테두리 없음, `rounded-lg` 모서리
-
-**PC (hover 가능)**:
-- hover 시 화면 좌측 하단에 큰 제목 `fixed` 표시
-- hover된 카드 밝게, 나머지 어둡게 (`bg-black/70`)
-- 우측 상단 화살표 아이콘 표시
-
-**터치 디바이스**:
-- 카드 내부 하단에 제목 항상 표시
-- 하단 그라데이션 오버레이
-- 화살표 항상 표시 (약간 투명)
-
-**터치 디바이스 감지 코드**:
+**6개 프로젝트 데이터**:
 ```javascript
-useEffect(() => {
-  const checkTouchDevice = () => {
-    setIsTouchDevice(
-      'ontouchstart' in window || 
-      navigator.maxTouchPoints > 0 ||
-      window.matchMedia('(hover: none)').matches
-    );
-  };
-  checkTouchDevice();
-  window.addEventListener('resize', checkTouchDevice);
-  return () => window.removeEventListener('resize', checkTouchDevice);
-}, []);
-```
-
----
-
-### 2. Portfolio.jsx
-**위치**: `src/pages/Portfolio.jsx`
-
-**기능**:
-- 전체 포트폴리오 목록 + 카테고리 필터링
-- 중앙 상단 "PROJECT" 타이틀 (글자별 애니메이션)
-- 필터: ALL, MEDIA ART, INTERACTIVE, EXHIBITION, WEB
-
-**필터 UI**:
-- PC: 언더라인 탭 스타일 (hover 시 언더라인 확장)
-- 모바일: 드롭다운 select
-
-**hover 타이틀 슬라이드인/아웃 효과**:
-- 별도 `SlideTitle` 컴포넌트 분리
-- hover 변경 시: 슬라이드아웃 (500ms) → 새 타이틀 슬라이드인
-- hover 해제 시: 슬라이드아웃 후 컴포넌트 언마운트
-- `isTransitioning` 상태로 빠른 hover 변경 처리
-- `pendingItemRef`로 트랜지션 중 새 hover 대기
-
-**SlideTitle 컴포넌트**:
-```javascript
-const SlideTitle = ({ title, isVisible, delay = 300 }) => {
-  const [isAnimating, setIsAnimating] = useState(false);
-
-  useEffect(() => {
-    if (isVisible) {
-      const timer = setTimeout(() => setIsAnimating(true), delay);
-      return () => clearTimeout(timer);
-    } else {
-      setIsAnimating(false);
-    }
-  }, [isVisible, delay]);
-
-  return (
-    <div className="pb-8 overflow-hidden md:pb-10">
-      <h2 className={`text-4xl font-bold text-white md:text-6xl lg:text-7xl xl:text-9xl 
-        drop-shadow-2xl leading-tight transform-gpu transition-transform duration-500 ease-out 
-        ${isAnimating ? 'translate-y-0' : 'translate-y-[150%]'}`}
-      >
-        {title}
-      </h2>
-    </div>
-  );
-};
-```
-
-**hover 상태 관리**:
-```javascript
-const [hoveredItem, setHoveredItem] = useState(null);
-const [displayedItem, setDisplayedItem] = useState(null);
-const [isTitleVisible, setIsTitleVisible] = useState(false);
-const [isTransitioning, setIsTransitioning] = useState(false);
-const pendingItemRef = useRef(null);
-
-useEffect(() => {
-  if (isTransitioning) {
-    pendingItemRef.current = hoveredItem;
-    return;
-  }
-
-  if (hoveredItem !== null) {
-    if (displayedItem === null) {
-      // 처음 hover: 바로 슬라이드인
-      setDisplayedItem(hoveredItem);
-      setIsTitleVisible(true);
-    } else if (hoveredItem !== displayedItem) {
-      // 다른 아이템으로 변경: 슬라이드아웃 → 슬라이드인
-      setIsTransitioning(true);
-      setIsTitleVisible(false);
-      
-      setTimeout(() => {
-        setDisplayedItem(hoveredItem);
-        setIsTitleVisible(true);
-        setTimeout(() => {
-          setIsTransitioning(false);
-          if (pendingItemRef.current !== null && pendingItemRef.current !== hoveredItem) {
-            setHoveredItem(pendingItemRef.current);
-          }
-          pendingItemRef.current = null;
-        }, 100);
-      }, 500);
-    }
-  } else {
-    // hover 해제
-    setIsTitleVisible(false);
-    setTimeout(() => setDisplayedItem(null), 500);
-  }
-}, [hoveredItem, displayedItem, isTransitioning]);
-```
-
----
-
-### 3. Lab.jsx
-**위치**: `src/pages/Lab.jsx`
-
-**기능**:
-- 실험적 프로젝트 목록
-- 타이틀: "Exploring the Unknown" (글자별 애니메이션)
-- 부제: "An ongoing laboratory where art and technology continuously converge."
-- **세부 페이지 없음** (Link 제거, 화살표 아이콘 제거)
-- 이미지 또는 영상 지원 (`type: 'image' | 'video'`)
-- 영상: `autoPlay`, `loop`, `muted`, `playsInline`
-
-**hover/터치 효과**:
-- PC: hover 시 카드 어두워지며 (`bg-black/60`) 날짜/제목/설명 표시
-- 터치: 항상 날짜/제목/설명 표시
-
-**데이터 구조**:
-```javascript
-const labItems = [
-  {
-    id: 1,
-    title: 'Particle System Experiment',
-    date: '2024.12',
-    description: '파티클 시스템을 활용한 인터랙티브 비주얼 실험 프로젝트',
-    thumbnail: '/images/lab/lab-1.jpg', // 또는 /videos/lab/lab-1.mp4
-    type: 'image', // 'image' 또는 'video'
-  },
-  // ...
+const SURROUNDING_MODELS = [
+  { id: 1, title: 'Media Art', path: '/portfolio/1' },
+  { id: 2, title: 'Interactive', path: '/portfolio/2' },
+  { id: 3, title: 'Exhibition', path: '/portfolio/3' },
+  { id: 4, title: 'Web Development', path: '/portfolio/4' },
+  { id: 5, title: 'Motion Graphics', path: '/portfolio/5' },
+  { id: 6, title: 'Installation', path: '/portfolio/6' },
 ];
 ```
 
-**이미지/영상 조건부 렌더링**:
-```jsx
-{item.type === 'video' ? (
-  <video
-    className="absolute inset-0 w-full h-full object-cover ..."
-    src={item.thumbnail}
-    autoPlay
-    loop
-    muted
-    playsInline
-  />
-) : (
-  <div 
-    className="absolute inset-0 bg-center bg-cover ..."
-    style={{ backgroundImage: `url(${item.thumbnail})` }}
-  />
-)}
-```
+### 3. WhatWeDoSection
+- 배경 영상 루핑 (`whatwedo-bg.mp4`)
+- 페이드인 텍스트 애니메이션
+
+### 4. PortfolioSection
+- "PORTFOLIO" 글자별 순차 애니메이션
+- 4개 카테고리 카드 (우측에서 슬라이드인)
+- 카테고리: MEDIA ART, INTERACTIVE, EXHIBITION, WEB
+
+### 5. SloganSection
+- 배경 영상 루핑 (`slogan-bg.mp4`)
+- 라인별 슬라이드인 텍스트
+
+### 6. ContactSection
+- 회사 소개서 다운로드 버튼
+- 연락처 정보 + 클릭 시 복사 기능
+- Contact Us 버튼
 
 ---
 
-### 4. Contact.jsx
-**위치**: `src/pages/Contact.jsx`
+## 🎨 3D 섹션 상세 (ThreeDSection)
 
-**기능**:
-- 문의 폼 (NAME, EMAIL, SUBJECT, MESSAGE)
-- 타이틀: "Please feel free to contact us." (글자별 애니메이션)
-- 이메일 복사 버튼 (`or onebyone@1-1studio.net [Copy]`)
-- 컨텐츠 수직 중앙 정렬 (`flex items-center min-h-screen`)
-- Send 버튼 + 로딩 스피너
-
-**픽셀아트 눈 2개** (PC lg 이상에서만 표시):
-- `absolute` 포지션 (페이지 내에서만 고정, 스크롤 시 따라오지 않음)
-- 흰색 사각형 + 검정 눈동자 + 흰색 하이라이트
-- 마우스 위치에 따라 눈동자 이동 (최대 8px)
-
-**PixelEye 컴포넌트**:
-```javascript
-const PixelEye = () => (
-  <div className="relative w-16 h-16 md:w-20 md:h-20 bg-white">
-    <div 
-      className="absolute w-6 h-6 bg-black md:w-8 md:h-8"
-      style={{
-        left: '50%',
-        top: '50%',
-        transform: `translate(calc(-50% + ${pupilPosition.x}px), calc(-50% + ${pupilPosition.y}px))`,
-        transition: 'transform 0.1s ease-out',
-      }}
-    >
-      <div className="absolute top-0 right-0 w-2 h-2 bg-white md:w-3 md:h-3" />
-    </div>
-  </div>
-);
-```
-
-**마우스 추적**:
-```javascript
-useEffect(() => {
-  const handleMouseMove = (e) => {
-    if (!eyesRef.current) return;
-
-    const eyes = eyesRef.current.getBoundingClientRect();
-    const eyesCenterX = eyes.left + eyes.width / 2;
-    const eyesCenterY = eyes.top + eyes.height / 2;
-
-    const angle = Math.atan2(e.clientY - eyesCenterY, e.clientX - eyesCenterX);
-    const distance = Math.min(
-      Math.hypot(e.clientX - eyesCenterX, e.clientY - eyesCenterY) / 15,
-      8
-    );
-
-    const x = Math.cos(angle) * distance;
-    const y = Math.sin(angle) * distance;
-
-    setPupilPosition({ x, y });
-  };
-
-  window.addEventListener('mousemove', handleMouseMove);
-  return () => window.removeEventListener('mousemove', handleMouseMove);
-}, []);
-```
-
----
-
-### 5. PortfolioDetail.jsx
-**위치**: `src/pages/PortfolioDetail.jsx`
-
-**기능**:
-- 포트폴리오 세부 페이지
-- URL: `/portfolio/:id`
-- "Back to Portfolio" 버튼 **fixed 고정** (스크롤해도 보임)
-- 좌우 여백 넓음 (`px-8 md:px-16 lg:px-24 xl:px-32`)
-- SHARE + 링크 복사 버튼
-- Prev/Next Project 네비게이션
-
-**레이아웃**:
-```
-┌─────────────────────────────────────────────────────────────────┐
-│ ← Back to Portfolio (fixed 고정)                                │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│    [타이틀 - 큰 글씨]        │  [설명 텍스트]                   │
-│    [부제 - 작은 글씨]        │                                  │
-│                              │  [키워드] [키워드] [키워드]      │
-│    YEAR     CLIENT           │  (타원 테두리)                   │
-│    2024     Samsung          │                                  │
-│                                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│                                                                 │
-│              [이미지/영상 1 - 중앙 정렬]                        │
-│              [이미지/영상 2]                                    │
-│              ... (최대 10개)                                    │
-│                                                                 │
-│                    SHARE  [🔗 Copy Link]                        │
-│                                                                 │
-├─────────────────────────────────────────────────────────────────┤
-│ ← Prev Project                              Next Project →     │
-└─────────────────────────────────────────────────────────────────┘
-```
-
-**데이터 구조**:
-```javascript
+### 사용 라이브러리
+```json
 {
-  title: 'Media Project One',
-  subtitle: 'Interactive Media Installation',
-  description: '미디어 아트와 기술의 융합을...',
-  keywords: ['Media Art', 'Interactive', 'Installation'],
-  year: '2024',
-  client: 'Samsung',
-  media: [
-    { type: 'image', src: '/images/portfolio/...' },
-    { type: 'video', src: '/videos/portfolio/...' },
-  ],
+  "@react-three/fiber": "^9.0.0",
+  "@react-three/drei": "^10.0.0",
+  "three": "^0.172.0"
 }
 ```
 
+### PC 버전 컴포넌트 구조
+```
+ThreeDSection
+├── Canvas (camera, shadows, gl settings)
+│   └── DesktopScene
+│       ├── BackgroundParticles (100개 파티클)
+│       ├── ambientLight
+│       ├── MouseSpotlight (마우스 따라다니는 조명)
+│       ├── pointLight x2 (인디고/핑크 분위기 조명)
+│       ├── CenterModel (마우스 방향 바라봄)
+│       └── SurroundingModel x6 (원형 배치)
+├── 인터랙션 힌트 (상단)
+├── 스크롤 인디케이터 (하단)
+└── ModelPopup (팝업)
+```
+
+### 모바일 버전 컴포넌트 구조
+```
+ThreeDSection (isMobile 분기)
+└── MobileView
+    ├── Canvas
+    │   └── MobileScene
+    │       ├── ambientLight + directionalLight + pointLight
+    │       └── MobileModel (자동 회전)
+    ├── 상단 안내 텍스트
+    ├── 좌/우 네비게이션 버튼
+    ├── 하단 정보 영역 (제목, 설명, View Project 버튼)
+    ├── 페이지 인디케이터
+    └── 팝업
+```
+
+### 주요 기능
+| 기능 | PC | 모바일 |
+|------|-----|--------|
+| 모델 표시 | 중앙 1개 + 주변 6개 | 1개 (스와이프로 전환) |
+| 회전 조작 | 우클릭 드래그 | 자동 회전 |
+| 프로젝트 선택 | 좌클릭 | 탭 |
+| 조명 | 스포트라이트 + 파티클 | 기본 조명 |
+| 프로젝트 전환 | 클릭으로 선택 | 스와이프/버튼 |
+
+---
+
+## 📄 완료된 페이지 요약
+
+| 페이지 | 주요 기능 |
+|--------|----------|
+| **Home** | 6개 섹션 (파티클 로고, 3D 모델, What We Do, Portfolio, Slogan, Contact) |
+| **About** | 회사 소개 (파티클 로고 효과) |
+| **Portfolio** | 전체 목록 + 카테고리 필터 + hover 슬라이드 타이틀 |
+| **PortfolioDetail** | 상세 페이지 (이미지/영상, Prev/Next 네비게이션) |
+| **Lab** | 실험 프로젝트 목록 (이미지/영상 지원) |
+| **Contact** | 문의 폼 + 눈 컴포넌트 (마우스 추적) |
+| **Category 페이지** | 공통 레이아웃 (CategoryLayout.jsx) |
 
 ---
 
@@ -439,7 +241,6 @@ useEffect(() => {
 - 우측: ABOUT, PORTFOLIO, LAB, CONTACT 메뉴 + 햄버거 버튼
 - 풀스크린 메뉴 (z-300): 햄버거 클릭 시 전체 화면 검정 배경
 - 메뉴 항목 순차 애니메이션
-- 메뉴 닫힌 후 300ms 뒤 페이지 이동 (전환 효과와 충돌 방지)
 
 ---
 
@@ -449,7 +250,6 @@ useEffect(() => {
 - 페이지 컨텐츠 변경
 - 검정 바가 다시 열림 (0.4초)
 - z-index: 200
-- 첫 로딩 시 애니메이션 없음
 
 ---
 
@@ -459,15 +259,29 @@ useEffect(() => {
 |------|-----|
 | 배경 | 검정 (`bg-black`) |
 | 텍스트 | 흰색 (`text-white`) |
-| 보조 텍스트 | 회색 (`text-gray-300`, `text-gray-400`, `text-gray-500`) |
-| 강조 색상 | 파란색 (`text-blue-400`) |
+| 보조 텍스트 | 회색 (`text-zinc-300`, `text-zinc-400`) |
+| 강조 색상 | 인디고/핑크 (`#6366f1`, `#ec4899`) |
 | 전환 효과 | 300-700ms duration |
-| 둥근 모서리 | `rounded-lg`, `rounded-full` (버튼/태그) |
-| hover 효과 | 밝기 변화, 스케일 변화, 색상 변화 |
 
 ---
 
 ## 🔧 공통 패턴
+
+### 디바이스 타입 감지
+```javascript
+const useDeviceType = () => {
+  const [isMobile, setIsMobile] = useState(false);
+  
+  useEffect(() => {
+    const checkDevice = () => setIsMobile(window.innerWidth <= 768);
+    checkDevice();
+    window.addEventListener('resize', checkDevice);
+    return () => window.removeEventListener('resize', checkDevice);
+  }, []);
+  
+  return { isMobile };
+};
+```
 
 ### 터치 디바이스 감지
 ```javascript
@@ -482,102 +296,7 @@ useEffect(() => {
     );
   };
   checkTouchDevice();
-  window.addEventListener('resize', checkTouchDevice);
-  return () => window.removeEventListener('resize', checkTouchDevice);
 }, []);
-```
-
-### 페이지 진입 애니메이션
-```javascript
-const [isVisible, setIsVisible] = useState(false);
-
-useEffect(() => {
-  setIsVisible(true);
-}, []);
-
-// 사용
-className={`... transition-all duration-700 ${
-  isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4'
-}`}
-```
-
-### 글자별 애니메이션
-```javascript
-const titleLetters = title.split('');
-
-{titleLetters.map((letter, index) => (
-  <span
-    key={index}
-    className={`inline-block transition-transform duration-700 ease-out ${
-      isVisible ? 'translate-y-0' : 'translate-y-full'
-    }`}
-    style={{ transitionDelay: `${index * 50}ms` }}
-  >
-    {letter === ' ' ? '\u00A0' : letter}
-  </span>
-))}
-```
-
-### 이메일/링크 복사
-```javascript
-const [copied, setCopied] = useState(false);
-
-const handleCopy = async (text) => {
-  try {
-    await navigator.clipboard.writeText(text);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  } catch (err) {
-    console.error('복사 실패:', err);
-  }
-};
-```
-
----
-
-## ⚙️ 필수 설정 파일
-
-### tailwind.config.js
-```javascript
-module.exports = {
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./public/index.html"],
-  theme: {
-    extend: {
-      transitionDuration: { '400': '400ms' }
-    }
-  },
-  plugins: [],
-}
-```
-
-### postcss.config.js
-```javascript
-module.exports = {
-  plugins: {
-    tailwindcss: {},
-    autoprefixer: {},
-  },
-}
-```
-
-### index.css (필수!)
-```css
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* 스크롤바 숨기기 */
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-}
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
-}
-
-#root {
-  overflow-x: clip;  /* 가로 스크롤 방지 (sticky 영향 없음) */
-}
 ```
 
 ---
@@ -600,42 +319,96 @@ services:
     ports: 3000:3000
 ```
 
-### 환경변수 (.env)
-```
-POSTGRES_DB=onebyone
-POSTGRES_USER=onebyone_user
-POSTGRES_PASSWORD=your_secure_password
-POSTGRES_HOST=db
-POSTGRES_PORT=5432
-SECRET_KEY=your-django-secret-key
-DEBUG=True
-ALLOWED_HOSTS=localhost,127.0.0.1
-TZ=Asia/Seoul
-```
+---
+
+## ✅ Frontend 완료 상태
+
+### 완료된 작업
+- [x] 모든 페이지 UI 구현
+- [x] 파티클 로고 효과 (LandingSection)
+- [x] 3D 모델 섹션 (ThreeDSection) - PC/모바일 반응형
+- [x] 페이지 전환 효과 (PageTransition)
+- [x] 네비게이션 + 풀스크린 메뉴
+- [x] 카테고리 레이아웃 (hover/터치 분기)
+- [x] 포트폴리오 상세 페이지
+- [x] Contact 폼 + 눈 컴포넌트
+- [x] Lab 페이지 (이미지/영상 지원)
+- [x] 반응형 디자인 (PC/모바일)
+
+### 프론트엔드 더미 데이터
+현재 모든 데이터는 각 컴포넌트 내부에 하드코딩되어 있음.
+백엔드 연동 시 API 호출로 대체 필요.
 
 ---
 
-## ✅ 해결된 이슈들
+## 📋 Backend 개발 TODO
 
-1. **Tailwind 미적용**: index.css에 `@tailwind` directives 추가
-2. **햄버거 메뉴 떨림**: z-index 조정 (메뉴 z-300 > PageTransition z-200)
-3. **파티클 띠용띠용 효과**: 속도 기반 → 직접 선형 보간으로 변경
-4. **마우스 좌표 불일치**: sticky 상태에서 clientX/Y 직접 사용
-5. **모바일 가로 스크롤**: `overflow-x: clip` 사용 (hidden 대신)
-6. **페이지 이동 시 스크롤 유지**: ScrollToTop 컴포넌트 추가
-7. **hover 시 타이틀 슬라이드**: 아이템 변경 시 슬라이드아웃 → 슬라이드인 순서
-8. **터치 디바이스 대응**: hover 불가 환경에서 카드 내부에 정보 항상 표시
-9. **fixed vs absolute**: 눈 컴포넌트가 스크롤 따라오는 문제 → absolute로 변경
+### 필요한 API 엔드포인트
 
----
+| 엔드포인트 | 메서드 | 설명 |
+|-----------|--------|------|
+| `/api/portfolios/` | GET | 포트폴리오 목록 (카테고리 필터) |
+| `/api/portfolios/:id/` | GET | 포트폴리오 상세 |
+| `/api/categories/` | GET | 카테고리 목록 |
+| `/api/lab/` | GET | Lab 프로젝트 목록 |
+| `/api/contact/` | POST | 문의 폼 제출 |
+| `/api/company/` | GET | 회사 정보 |
 
-## 📋 남은 작업 (TODO)
+### 필요한 모델
 
-- [ ] About 페이지 디자인
-- [ ] Backend API 연동
-- [ ] 반응형 디자인 테스트/수정
-- [ ] 이미지/영상 에셋 준비
-- [ ] SEO 메타 태그 추가
+**Portfolio**
+```python
+class Portfolio(models.Model):
+    title = models.CharField(max_length=200)
+    subtitle = models.CharField(max_length=200, blank=True)
+    description = models.TextField()
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+    keywords = models.JSONField(default=list)  # ['Media Art', 'Interactive']
+    year = models.CharField(max_length=10)
+    client = models.CharField(max_length=100, blank=True)
+    thumbnail = models.ImageField(upload_to='portfolio/thumbnails/')
+    created_at = models.DateTimeField(auto_now_add=True)
+    order = models.IntegerField(default=0)
+```
+
+**PortfolioMedia**
+```python
+class PortfolioMedia(models.Model):
+    portfolio = models.ForeignKey(Portfolio, related_name='media', on_delete=models.CASCADE)
+    type = models.CharField(choices=[('image', 'Image'), ('video', 'Video')])
+    file = models.FileField(upload_to='portfolio/media/')
+    order = models.IntegerField(default=0)
+```
+
+**Category**
+```python
+class Category(models.Model):
+    name = models.CharField(max_length=100)  # Media Art, Interactive, Exhibition, Web
+    slug = models.SlugField(unique=True)     # media-art, interactive, exhibition, web
+    thumbnail = models.ImageField(upload_to='category/')
+```
+
+**LabProject**
+```python
+class LabProject(models.Model):
+    title = models.CharField(max_length=200)
+    description = models.TextField()
+    date = models.CharField(max_length=20)  # "2024.12"
+    thumbnail = models.FileField(upload_to='lab/')
+    type = models.CharField(choices=[('image', 'Image'), ('video', 'Video')])
+    created_at = models.DateTimeField(auto_now_add=True)
+```
+
+**ContactInquiry**
+```python
+class ContactInquiry(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    subject = models.CharField(max_length=200)
+    message = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    is_read = models.BooleanField(default=False)
+```
 
 ---
 
@@ -651,18 +424,41 @@ TZ=Asia/Seoul
 ## 💻 실행 명령어
 
 ```bash
+# Frontend 개발 서버
+cd frontend
+npm install
+npm start
+
 # Docker 빌드 및 실행
 docker-compose up --build
 
-# 백그라운드 실행
-docker-compose up -d --build
-
-# 종료
-docker-compose down
-
-# 볼륨까지 삭제 (DB 초기화)
-docker-compose down -v
-
 # Git Submodule 클론
 git clone --recursive https://github.com/ykh9871/onebyone-main.git
+```
+
+---
+
+## 📦 주요 패키지
+
+### Frontend
+```json
+{
+  "react": "^19.0.0",
+  "react-router-dom": "^7.x",
+  "@react-three/fiber": "^9.0.0",
+  "@react-three/drei": "^10.0.0",
+  "three": "^0.172.0",
+  "tailwindcss": "^3.x",
+  "framer-motion": "^11.x"
+}
+```
+
+### Backend (예정)
+```
+Django==5.x
+djangorestframework==3.x
+django-cors-headers
+Pillow
+psycopg2-binary
+python-dotenv
 ```
