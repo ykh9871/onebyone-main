@@ -1,464 +1,326 @@
-# OneByOne 디자인 회사 웹 프로젝트 요약
+# OneByOne Studio 웹 프로젝트 요약
+
+> 최종 업데이트: 2025년 1월 26일
+
+---
 
 ## 📌 프로젝트 개요
 
-- **프로젝트명**: OneByOne Studio 웹사이트
-- **구조**: React Frontend + Django DRF Backend + Docker
-- **Git 방식**: Submodule (메인 저장소에서 frontend/backend 연결)
-- **상태**: 프론트엔드 완성 ✅ / 백엔드 개발 예정 ⏳
-
-### Git 저장소
-```
-Main: https://github.com/ykh9871/onebyone-main.git
-├── Frontend: https://github.com/ykh9871/onebyone-frontend.git
-└── Backend: https://github.com/ykh9871/onebyone-backend.git
-```
+| 항목 | 내용 |
+|------|------|
+| **프로젝트명** | OneByOne Studio 웹사이트 |
+| **목적** | 미디어아트 스튜디오 포트폴리오 및 회사 소개 웹사이트 |
+| **Frontend** | http://ces2025.iptime.org:30000 |
+| **Backend API** | http://ces2025.iptime.org:38000 |
+| **구조** | Git Submodule (Frontend + Backend 분리) |
 
 ---
 
-## 📁 Frontend 디렉토리 구조
-
-```
-frontend/
-├── public/
-│   ├── index.html
-│   ├── models/
-│   │   └── submarine.glb              # 3D 모델 파일
-│   ├── videos/
-│   │   ├── whatwedo-bg.mp4            # What We Do 섹션 배경 영상
-│   │   ├── slogan-bg.mp4              # Slogan 섹션 배경 영상
-│   │   └── lab/                       # Lab 페이지 영상들
-│   ├── images/
-│   │   ├── category/                  # 카테고리 썸네일
-│   │   ├── portfolio/                 # 포트폴리오 이미지들
-│   │   └── lab/                       # Lab 페이지 이미지들
-│   └── files/
-│       └── company-profile.pdf        # 회사 소개서
-│
-├── src/
-│   ├── index.js                       # React 진입점
-│   ├── index.css                      # 글로벌 스타일 (Tailwind directives)
-│   ├── App.jsx                        # 라우팅 설정
-│   ├── App.css
-│   │
-│   ├── assets/
-│   │   ├── logo.avif                  # 메인 로고 (파티클용)
-│   │   └── smallLogo.avif             # 네비게이션 로고
-│   │
-│   ├── components/
-│   │   ├── index.js                   # 컴포넌트 통합 export
-│   │   ├── Navbar.jsx                 # 네비게이션 바 + 풀스크린 메뉴
-│   │   ├── Footer.jsx                 # 푸터
-│   │   ├── PageTransition.jsx         # 페이지 전환 효과 (눈 깜빡임)
-│   │   ├── ScrollToTop.jsx            # 페이지 이동 시 스크롤 최상단
-│   │   ├── CategoryLayout.jsx         # 카테고리 페이지 공통 레이아웃
-│   │   │
-│   │   ├── about/
-│   │   │   ├── index.js
-│   │   │   └── LandingSection.jsx     # About 파티클 로고 효과
-│   │   │
-│   │   └── home/
-│   │       ├── index.js
-│   │       ├── LandingSection.jsx     # 파티클 로고 효과
-│   │       ├── ThreeDSection.jsx      # 3D 모델 섹션 (PC/모바일 반응형) ✅ NEW
-│   │       ├── MobileThreeDSection.jsx # 모바일용 3D 섹션 (별도 파일) ✅ NEW
-│   │       ├── WhatWeDoSection.jsx    # 배경 영상 + 텍스트
-│   │       ├── PortfolioSection.jsx   # 카테고리 슬라이드인
-│   │       ├── SloganSection.jsx      # 배경 영상 + 슬로건
-│   │       └── ContactSection.jsx     # 연락처 + 복사 기능
-│   │
-│   └── pages/
-│       ├── index.js                   # 페이지 통합 export
-│       ├── Home.jsx                   # 메인 페이지 (6개 섹션)
-│       ├── About.jsx                  # 소개 페이지
-│       ├── Portfolio.jsx              # 포트폴리오 전체
-│       ├── PortfolioDetail.jsx        # 포트폴리오 상세
-│       ├── Lab.jsx                    # 랩 페이지
-│       ├── Contact.jsx                # 연락처 페이지
-│       ├── MediaArt.jsx               # 카테고리: 미디어아트
-│       ├── Interactive.jsx            # 카테고리: 인터랙티브
-│       ├── Exhibition.jsx             # 카테고리: 전시
-│       └── Web.jsx                    # 카테고리: 웹
-│
-├── tailwind.config.js
-├── postcss.config.js
-├── package.json
-└── Dockerfile
-```
-
----
-
-## 🛣️ 라우팅 구조
-
-| 경로 | 페이지 | 설명 | 상태 |
-|------|--------|------|------|
-| `/` | Home | 메인 페이지 (6개 섹션) | ✅ 완료 |
-| `/about` | About | 회사 소개 | ✅ 완료 |
-| `/portfolio` | Portfolio | 포트폴리오 전체 | ✅ 완료 |
-| `/portfolio/:id` | PortfolioDetail | 포트폴리오 상세 | ✅ 완료 |
-| `/lab` | Lab | 실험실/랩 | ✅ 완료 |
-| `/contact` | Contact | 연락처 | ✅ 완료 |
-| `/category/media-art` | MediaArt | 미디어아트 카테고리 | ✅ 완료 |
-| `/category/interactive` | Interactive | 인터랙티브 카테고리 | ✅ 완료 |
-| `/category/exhibition` | Exhibition | 전시 카테고리 | ✅ 완료 |
-| `/category/web` | Web | 웹 카테고리 | ✅ 완료 |
-
----
-
-## 🏠 메인 페이지 (Home) 6개 섹션
-
-### 1. LandingSection (파티클 로고)
-- 높이: 250vh (스크롤 범위 확장)
-- 로고 이미지(`logo.avif`)를 파티클로 분해
-- 스크롤 시 파티클 흩어짐 + 페이드아웃
-- 마우스 호버 시 파티클 밀어내기 효과
-- sticky로 화면 고정
-
-### 2. ThreeDSection (3D 모델) ✅ NEW
-- 높이: 100vh
-- GLB 3D 모델 (`/models/submarine.glb`) 로드
-- **PC/모바일 반응형 분기** (768px 기준)
-
-**PC 버전**:
-- 중앙 모델: 마우스 따라 바라봄 + 두둥실 애니메이션
-- 주변 6개 모델: 원형 배치 (x-y 평면)
-- 좌클릭: 팝업 열기
-- 우클릭 드래그: 모델 Y축 회전
-- 마우스 스포트라이트 효과
-- 배경 파티클 효과
-- 호버 시 글로우 + 라벨 표시
-
-**모바일 버전**:
-- 단일 3D 모델 표시 (자동 회전)
-- 좌우 스와이프로 프로젝트 전환
-- 좌우 네비게이션 버튼
-- 하단 페이지 인디케이터
-- 탭하여 팝업 열기
-
-**6개 프로젝트 데이터**:
-```javascript
-const SURROUNDING_MODELS = [
-  { id: 1, title: 'Media Art', path: '/portfolio/1' },
-  { id: 2, title: 'Interactive', path: '/portfolio/2' },
-  { id: 3, title: 'Exhibition', path: '/portfolio/3' },
-  { id: 4, title: 'Web Development', path: '/portfolio/4' },
-  { id: 5, title: 'Motion Graphics', path: '/portfolio/5' },
-  { id: 6, title: 'Installation', path: '/portfolio/6' },
-];
-```
-
-### 3. WhatWeDoSection
-- 배경 영상 루핑 (`whatwedo-bg.mp4`)
-- 페이드인 텍스트 애니메이션
-
-### 4. PortfolioSection
-- "PORTFOLIO" 글자별 순차 애니메이션
-- 4개 카테고리 카드 (우측에서 슬라이드인)
-- 카테고리: MEDIA ART, INTERACTIVE, EXHIBITION, WEB
-
-### 5. SloganSection
-- 배경 영상 루핑 (`slogan-bg.mp4`)
-- 라인별 슬라이드인 텍스트
-
-### 6. ContactSection
-- 회사 소개서 다운로드 버튼
-- 연락처 정보 + 클릭 시 복사 기능
-- Contact Us 버튼
-
----
-
-## 🎨 3D 섹션 상세 (ThreeDSection)
-
-### 사용 라이브러리
-```json
-{
-  "@react-three/fiber": "^9.0.0",
-  "@react-three/drei": "^10.0.0",
-  "three": "^0.172.0"
-}
-```
-
-### PC 버전 컴포넌트 구조
-```
-ThreeDSection
-├── Canvas (camera, shadows, gl settings)
-│   └── DesktopScene
-│       ├── BackgroundParticles (100개 파티클)
-│       ├── ambientLight
-│       ├── MouseSpotlight (마우스 따라다니는 조명)
-│       ├── pointLight x2 (인디고/핑크 분위기 조명)
-│       ├── CenterModel (마우스 방향 바라봄)
-│       └── SurroundingModel x6 (원형 배치)
-├── 인터랙션 힌트 (상단)
-├── 스크롤 인디케이터 (하단)
-└── ModelPopup (팝업)
-```
-
-### 모바일 버전 컴포넌트 구조
-```
-ThreeDSection (isMobile 분기)
-└── MobileView
-    ├── Canvas
-    │   └── MobileScene
-    │       ├── ambientLight + directionalLight + pointLight
-    │       └── MobileModel (자동 회전)
-    ├── 상단 안내 텍스트
-    ├── 좌/우 네비게이션 버튼
-    ├── 하단 정보 영역 (제목, 설명, View Project 버튼)
-    ├── 페이지 인디케이터
-    └── 팝업
-```
-
-### 주요 기능
-| 기능 | PC | 모바일 |
-|------|-----|--------|
-| 모델 표시 | 중앙 1개 + 주변 6개 | 1개 (스와이프로 전환) |
-| 회전 조작 | 우클릭 드래그 | 자동 회전 |
-| 프로젝트 선택 | 좌클릭 | 탭 |
-| 조명 | 스포트라이트 + 파티클 | 기본 조명 |
-| 프로젝트 전환 | 클릭으로 선택 | 스와이프/버튼 |
-
----
-
-## 📄 완료된 페이지 요약
-
-| 페이지 | 주요 기능 |
-|--------|----------|
-| **Home** | 6개 섹션 (파티클 로고, 3D 모델, What We Do, Portfolio, Slogan, Contact) |
-| **About** | 회사 소개 (파티클 로고 효과) |
-| **Portfolio** | 전체 목록 + 카테고리 필터 + hover 슬라이드 타이틀 |
-| **PortfolioDetail** | 상세 페이지 (이미지/영상, Prev/Next 네비게이션) |
-| **Lab** | 실험 프로젝트 목록 (이미지/영상 지원) |
-| **Contact** | 문의 폼 + 눈 컴포넌트 (마우스 추적) |
-| **Category 페이지** | 공통 레이아웃 (CategoryLayout.jsx) |
-
----
-
-## 🧭 Navbar 기능
-
-- 상단 고정 (fixed, z-50)
-- 좌측: 로고 (홈 링크)
-- 우측: ABOUT, PORTFOLIO, LAB, CONTACT 메뉴 + 햄버거 버튼
-- 풀스크린 메뉴 (z-300): 햄버거 클릭 시 전체 화면 검정 배경
-- 메뉴 항목 순차 애니메이션
-
----
-
-## 🔄 PageTransition (눈 깜빡임 효과)
-
-- 상단/하단에서 검정 바가 화면 중앙으로 닫힘 (0.4초)
-- 페이지 컨텐츠 변경
-- 검정 바가 다시 열림 (0.4초)
-- z-index: 200
-
----
-
-## 🎨 디자인 테마
-
-| 항목 | 값 |
-|------|-----|
-| 배경 | 검정 (`bg-black`) |
-| 텍스트 | 흰색 (`text-white`) |
-| 보조 텍스트 | 회색 (`text-zinc-300`, `text-zinc-400`) |
-| 강조 색상 | 인디고/핑크 (`#6366f1`, `#ec4899`) |
-| 전환 효과 | 300-700ms duration |
-
----
-
-## 🔧 공통 패턴
-
-### 디바이스 타입 감지
-```javascript
-const useDeviceType = () => {
-  const [isMobile, setIsMobile] = useState(false);
-  
-  useEffect(() => {
-    const checkDevice = () => setIsMobile(window.innerWidth <= 768);
-    checkDevice();
-    window.addEventListener('resize', checkDevice);
-    return () => window.removeEventListener('resize', checkDevice);
-  }, []);
-  
-  return { isMobile };
-};
-```
-
-### 터치 디바이스 감지
-```javascript
-const [isTouchDevice, setIsTouchDevice] = useState(false);
-
-useEffect(() => {
-  const checkTouchDevice = () => {
-    setIsTouchDevice(
-      'ontouchstart' in window || 
-      navigator.maxTouchPoints > 0 ||
-      window.matchMedia('(hover: none)').matches
-    );
-  };
-  checkTouchDevice();
-}, []);
-```
-
----
-
-## 🐳 Docker 구성
-
-### docker-compose.yml
-```yaml
-services:
-  db:
-    image: postgres
-    ports: 54320:5432
-    
-  backend:
-    build: ./backend
-    ports: 8000:8000
-    
-  frontend:
-    build: ./frontend
-    ports: 3000:3000
-```
-
----
-
-## ✅ Frontend 완료 상태
-
-### 완료된 작업
-- [x] 모든 페이지 UI 구현
-- [x] 파티클 로고 효과 (LandingSection)
-- [x] 3D 모델 섹션 (ThreeDSection) - PC/모바일 반응형
-- [x] 페이지 전환 효과 (PageTransition)
-- [x] 네비게이션 + 풀스크린 메뉴
-- [x] 카테고리 레이아웃 (hover/터치 분기)
-- [x] 포트폴리오 상세 페이지
-- [x] Contact 폼 + 눈 컴포넌트
-- [x] Lab 페이지 (이미지/영상 지원)
-- [x] 반응형 디자인 (PC/모바일)
-
-### 프론트엔드 더미 데이터
-현재 모든 데이터는 각 컴포넌트 내부에 하드코딩되어 있음.
-백엔드 연동 시 API 호출로 대체 필요.
-
----
-
-## 📋 Backend 개발 TODO
-
-### 필요한 API 엔드포인트
-
-| 엔드포인트 | 메서드 | 설명 |
-|-----------|--------|------|
-| `/api/portfolios/` | GET | 포트폴리오 목록 (카테고리 필터) |
-| `/api/portfolios/:id/` | GET | 포트폴리오 상세 |
-| `/api/categories/` | GET | 카테고리 목록 |
-| `/api/lab/` | GET | Lab 프로젝트 목록 |
-| `/api/contact/` | POST | 문의 폼 제출 |
-| `/api/company/` | GET | 회사 정보 |
-
-### 필요한 모델
-
-**Portfolio**
-```python
-class Portfolio(models.Model):
-    title = models.CharField(max_length=200)
-    subtitle = models.CharField(max_length=200, blank=True)
-    description = models.TextField()
-    category = models.ForeignKey(Category, on_delete=models.CASCADE)
-    keywords = models.JSONField(default=list)  # ['Media Art', 'Interactive']
-    year = models.CharField(max_length=10)
-    client = models.CharField(max_length=100, blank=True)
-    thumbnail = models.ImageField(upload_to='portfolio/thumbnails/')
-    created_at = models.DateTimeField(auto_now_add=True)
-    order = models.IntegerField(default=0)
-```
-
-**PortfolioMedia**
-```python
-class PortfolioMedia(models.Model):
-    portfolio = models.ForeignKey(Portfolio, related_name='media', on_delete=models.CASCADE)
-    type = models.CharField(choices=[('image', 'Image'), ('video', 'Video')])
-    file = models.FileField(upload_to='portfolio/media/')
-    order = models.IntegerField(default=0)
-```
-
-**Category**
-```python
-class Category(models.Model):
-    name = models.CharField(max_length=100)  # Media Art, Interactive, Exhibition, Web
-    slug = models.SlugField(unique=True)     # media-art, interactive, exhibition, web
-    thumbnail = models.ImageField(upload_to='category/')
-```
-
-**LabProject**
-```python
-class LabProject(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField()
-    date = models.CharField(max_length=20)  # "2024.12"
-    thumbnail = models.FileField(upload_to='lab/')
-    type = models.CharField(choices=[('image', 'Image'), ('video', 'Video')])
-    created_at = models.DateTimeField(auto_now_add=True)
-```
-
-**ContactInquiry**
-```python
-class ContactInquiry(models.Model):
-    name = models.CharField(max_length=100)
-    email = models.EmailField()
-    subject = models.CharField(max_length=200)
-    message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    is_read = models.BooleanField(default=False)
-```
-
----
-
-## 🔗 회사 정보
-
-- **회사명**: 원바이원 스튜디오 (1BY1 STUDIO)
-- **E-mail**: onebyone@1-1studio.net
-- **사업자등록번호**: 507-86-02842
-- **주소**: 서울특별시 강남구 역삼로 77길 6, 2층
-
----
-
-## 💻 실행 명령어
-
-```bash
-# Frontend 개발 서버
-cd frontend
-npm install
-npm start
-
-# Docker 빌드 및 실행
-docker-compose up --build
-
-# Git Submodule 클론
-git clone --recursive https://github.com/ykh9871/onebyone-main.git
-```
-
----
-
-## 📦 주요 패키지
+## 🛠 기술 스택
 
 ### Frontend
-```json
-{
-  "react": "^19.0.0",
-  "react-router-dom": "^7.x",
-  "@react-three/fiber": "^9.0.0",
-  "@react-three/drei": "^10.0.0",
-  "three": "^0.172.0",
-  "tailwindcss": "^3.x",
-  "framer-motion": "^11.x"
-}
+| 기술 | 버전/설명 |
+|------|----------|
+| React | 18.x |
+| Vite | 빌드 도구 |
+| React Router | 라우팅 |
+| Tailwind CSS | 스타일링 |
+| Three.js | 3D 렌더링 |
+| @react-three/fiber | React Three.js 래퍼 |
+| @react-three/drei | Three.js 헬퍼 |
+| Axios | HTTP 클라이언트 |
+
+### Backend
+| 기술 | 버전/설명 |
+|------|----------|
+| Python | 3.11+ |
+| Django | 4.x |
+| Django REST Framework | API 구축 |
+| PostgreSQL | 데이터베이스 |
+| Docker | 컨테이너화 |
+| Gunicorn | WSGI 서버 |
+
+---
+
+## 📁 프로젝트 구조
+
+```
+onebyone-studio/
+├── frontend/
+│   ├── public/
+│   │   ├── models/          # 3D GLB 모델 파일
+│   │   │   ├── field.glb
+│   │   │   ├── logo.glb
+│   │   │   ├── submarine.glb
+│   │   │   ├── arrow.glb
+│   │   │   ├── car.glb
+│   │   │   ├── character.glb
+│   │   │   ├── stamp.glb
+│   │   │   └── ice_cream.glb
+│   │   └── images/
+│   │       └── logo/        # 클라이언트 로고
+│   │           ├── LH.png
+│   │           ├── sk.png
+│   │           ├── 국가유산진흥원.png
+│   │           ├── 국립국악원.png
+│   │           ├── 부산엑스포.png
+│   │           ├── 서울문화재단.png
+│   │           ├── 에버랜드.png
+│   │           ├── 전주문화재단.png
+│   │           └── 한국중부발전소.png
+│   └── src/
+│       ├── api/             # API 통신
+│       ├── components/
+│       │   └── home/
+│       │       ├── ThreeDSection.jsx
+│       │       └── PortfolioSection.jsx
+│       ├── admin/
+│       │   └── pages/
+│       │       ├── AdminDashboard.jsx
+│       │       ├── AdminContacts.jsx
+│       │       └── AdminPortfolioEdit.jsx
+│       └── pages/
+│
+└── backend/
+    └── apps/
+        ├── contact/
+        │   ├── models.py
+        │   ├── admin_views.py
+        │   └── admin_serializers.py
+        ├── portfolio/
+        │   ├── models.py
+        │   ├── serializers.py
+        │   ├── admin_views.py
+        │   └── admin_serializers.py
+        └── lab/
+            └── admin_views.py
 ```
 
-### Backend (예정)
+---
+
+## 🎯 주요 기능
+
+### 1. 홈페이지 3D 섹션 (ThreeDSection)
+
+#### 구현 내용
+- **6개 포트폴리오 모델** - 플랫폼 위에 3D 모델 배치
+- **중앙 로고 모델** - `logo.glb` 표시
+- **Isometric 카메라** - FOV 20으로 외곽 왜곡 최소화
+- **무한 바닥** - Field 외곽이 보이지 않도록 처리
+- **조명 시스템**
+  - 중앙 고정 스포트라이트 (로고용)
+  - 마우스 따라다니는 스포트라이트
+  - 바닥 조명 반사 제거
+- **상시 회전** - 모든 포트폴리오 모델 자동 회전 (로고 제외)
+- **인터랙션** - 드래그/줌 비활성화, 클릭으로 포트폴리오 이동
+
+#### 사용 가능한 3D 모델
+| 모델명 | 파일 | 설명 |
+|--------|------|------|
+| submarine | submarine.glb | 잠수함 |
+| arrow | arrow.glb | 화살표 |
+| car | car.glb | 자동차 |
+| character | character.glb | 캐릭터 |
+| stamp | stamp.glb | 도장 |
+| ice_cream | ice_cream.glb | 아이스크림 |
+| logo | logo.glb | 중앙 로고 (고정) |
+
+### 2. 포트폴리오 섹션 (PortfolioSection)
+
+#### 구현 내용
+- **카테고리 캐러셀** - 드래그/휠 스크롤로 탐색
+- **부드러운 스크롤** - requestAnimationFrame 기반 이징
+- **클라이언트 로고 마퀴** - 무한 스크롤 애니메이션
+  - 9개 클라이언트 로고
+  - 호버 시 일시정지
+  - 그레이스케일 → 컬러 전환 효과
+
+### 3. Admin 시스템
+
+#### Dashboard
+- 통계 카드 (포트폴리오, 문의, 카테고리)
+- 최근 문의 목록 (읽음/안읽음 표시)
+- 문의 클릭 시 AdminContacts로 이동 (선택 상태 유지)
+
+#### Portfolio 관리
+- CRUD 기능
+- 상단 고정 (is_pinned) 기능
+- **3D 모델 선택** - 상단 고정 시 3D 모델 지정 가능
+
+#### Contact 관리
+- 문의 목록 조회
+- 읽음 처리 (POST 요청)
+- URL 파라미터로 초기 선택 처리
+
+---
+
+## 🔧 버그 수정 내역
+
+### 1. Contact 읽음 처리 버그
+- **파일**: `backend/apps/contact/admin_views.py`
+- **문제**: POST 메서드가 허용되지 않음
+- **해결**: `http_method_names`에 "post" 추가
+
+### 2. Portfolio 500 에러
+- **파일**: `backend/apps/portfolio/admin_serializers.py`
+- **문제**: PortfolioMedia에 없는 created_at 필드 참조
+- **해결**: PortfolioMediaSerializer에서 created_at 제거
+
+### 3. Admin 필터링 빈 문자열 버그
+- **영향 파일**:
+  - `backend/apps/contact/admin_views.py`
+  - `backend/apps/portfolio/admin_views.py`
+  - `backend/apps/lab/admin_views.py`
+- **문제**: `?is_read=` 빈 문자열이 `is not None` 통과
+- **해결**: `if param in ["true", "false"]:` 명시적 체크
+
+```python
+# 수정 전
+is_read = request.query_params.get("is_read")
+if is_read is not None:
+    queryset = queryset.filter(is_read=is_read == "true")
+
+# 수정 후
+is_read = request.query_params.get("is_read")
+if is_read in ["true", "false"]:
+    queryset = queryset.filter(is_read=is_read == "true")
 ```
-Django==5.x
-djangorestframework==3.x
-django-cors-headers
-Pillow
-psycopg2-binary
-python-dotenv
+
+---
+
+## ✨ 신규 기능
+
+### 1. 포트폴리오별 3D 모델 선택
+
+#### Backend 변경
+```python
+# backend/apps/portfolio/models.py
+MODEL_FILE_CHOICES = [
+    ("", "선택 안함"),
+    ("submarine", "Submarine (잠수함)"),
+    ("arrow", "Arrow (화살표)"),
+    ("car", "Car (자동차)"),
+    ("character", "Character (캐릭터)"),
+    ("stamp", "Stamp (도장)"),
+    ("ice_cream", "Ice Cream (아이스크림)"),
+]
+
+model_file = models.CharField(
+    "3D 모델", max_length=20, blank=True, default="",
+    choices=MODEL_FILE_CHOICES,
+)
 ```
+
+#### Frontend 변경
+- Admin에서 상단 고정 체크 시 3D 모델 선택 드롭다운 표시
+- ThreeDSection에서 `model_file` 기반 모델 로딩
+
+### 2. 클라이언트 로고 마퀴
+- 무한 CSS 애니메이션 (`@keyframes marquee`)
+- 30초 주기 반복
+- 좌우 그라데이션 페이드
+
+---
+
+## 🗄 데이터베이스 마이그레이션
+
+### 필수 실행 명령어
+```bash
+# Docker 환경
+docker-compose exec backend python manage.py makemigrations portfolio
+docker-compose exec backend python manage.py migrate
+
+# 직접 실행
+python manage.py makemigrations portfolio
+python manage.py migrate
+```
+
+### 추가된 필드
+| 앱 | 모델 | 필드 | 타입 |
+|----|------|------|------|
+| portfolio | Portfolio | model_file | CharField(max_length=20) |
+
+---
+
+## 📝 API 엔드포인트
+
+### Public API
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| GET | /api/portfolios/ | 포트폴리오 목록 |
+| GET | /api/portfolios/featured/ | 상단 고정 포트폴리오 |
+| GET | /api/portfolios/{id}/ | 포트폴리오 상세 |
+| GET | /api/categories/ | 카테고리 목록 |
+| POST | /api/contact/ | 문의 등록 |
+
+### Admin API
+| Method | Endpoint | 설명 |
+|--------|----------|------|
+| GET | /api/admin/dashboard/ | 대시보드 통계 |
+| GET | /api/admin/portfolios/ | 포트폴리오 관리 목록 |
+| POST | /api/admin/portfolios/ | 포트폴리오 생성 |
+| PUT | /api/admin/portfolios/{id}/ | 포트폴리오 수정 |
+| DELETE | /api/admin/portfolios/{id}/ | 포트폴리오 삭제 |
+| GET | /api/admin/contacts/ | 문의 관리 목록 |
+| POST | /api/admin/contacts/{id}/read/ | 문의 읽음 처리 |
+
+---
+
+## 🚀 배포 체크리스트
+
+### Backend
+- [ ] 마이그레이션 실행
+- [ ] 정적 파일 수집 (`collectstatic`)
+- [ ] 서버 재시작
+
+### Frontend
+- [ ] 3D 모델 파일 확인 (`/public/models/`)
+- [ ] 클라이언트 로고 파일 확인 (`/public/images/logo/`)
+- [ ] 빌드 (`npm run build`)
+- [ ] 배포
+
+---
+
+## 📂 수정된 파일 목록
+
+### Backend
+| 파일 | 변경 내용 |
+|------|----------|
+| apps/contact/admin_views.py | 읽음 처리 POST 허용, 빈 문자열 필터 수정 |
+| apps/portfolio/models.py | model_file 필드 추가 |
+| apps/portfolio/serializers.py | model_file 필드 추가 |
+| apps/portfolio/admin_serializers.py | model_file 필드 추가, created_at 제거 |
+| apps/portfolio/admin_views.py | 빈 문자열 필터 수정 |
+| apps/lab/admin_views.py | 빈 문자열 필터 수정 |
+
+### Frontend
+| 파일 | 변경 내용 |
+|------|----------|
+| src/components/home/ThreeDSection.jsx | 전면 리뉴얼 (조명, 로고, 카메라 등) |
+| src/components/home/PortfolioSection.jsx | 클라이언트 로고 마퀴 추가 |
+| src/admin/pages/AdminDashboard.jsx | Contacts 연동 |
+| src/admin/pages/AdminContacts.jsx | URL 파라미터 초기 선택 |
+| src/admin/pages/AdminPortfolioEdit.jsx | 3D 모델 선택 UI |
+
+---
+
+## 🔮 향후 개선 사항
+
+1. **3D 섹션**
+   - 로고 모델 애니메이션 추가
+   - 모바일 터치 인터랙션 개선
+
+2. **Admin**
+   - 포트폴리오 미리보기 기능
+   - 드래그 앤 드롭 정렬
+
+3. **성능**
+   - 3D 모델 압축 (Draco)
+   - 이미지 최적화 (WebP)
+   - 코드 스플리팅
+
+---
+
+## 📞 문의
+
+개발 관련 문의사항은 프로젝트 관리자에게 연락 바랍니다.
