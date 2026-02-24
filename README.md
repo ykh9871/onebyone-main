@@ -1,6 +1,6 @@
 # OneByOne Studio 웹 프로젝트
 
-> 최종 업데이트: 2025년 2월 20일
+> 최종 업데이트: 2026년 2월 25일
 
 ---
 
@@ -41,11 +41,14 @@
 | Django | 5.2.6 |
 | Django REST Framework | 3.16.1 — RESTful API 구축 |
 | djangorestframework-simplejwt | 5.5.1 — JWT 인증 |
+| PyJWT | 2.10.1 — JWT 토큰 처리 |
 | django-cors-headers | 4.8.0 — CORS 처리 |
 | django-filter | 24.3 — 쿼리셋 필터링 |
 | django-admin-sortable2 | 2.2.4 — Admin 정렬 |
-| django-storages + boto3 | AWS S3 파일 스토리지 |
+| django-storages | 1.14.6 — AWS S3 파일 스토리지 |
+| boto3 | 1.40.32 — AWS SDK |
 | Pillow | 11.3.0 — 이미지 처리 |
+| psycopg2-binary | 2.9.10 — PostgreSQL 어댑터 |
 | python-decouple | 3.8 — 환경변수 관리 |
 | PostgreSQL | 데이터베이스 |
 | Docker | 컨테이너화 |
@@ -68,7 +71,7 @@ onebyone-studio/
 ├── src/                          # Frontend (React)
 │   ├── api/                      # API 통신 모듈
 │   │   ├── config.js             # Axios 인스턴스 + 인터셉터 (JWT 자동 갱신)
-│   │   ├── admin.js              # Admin API (인증, CRUD, 토글 등)
+│   │   ├── admin.js              # Admin API (인증, CRUD, 토글, 유튜브 미디어 등)
 │   │   ├── portfolio.js          # Public 포트폴리오 API
 │   │   ├── contact.js            # 문의 등록 API
 │   │   ├── lab.js                # Lab 프로젝트 API
@@ -131,8 +134,8 @@ onebyone-studio/
     │   │   ├── views.py           # Public ViewSet (ReadOnly)
     │   │   ├── serializers.py     # Public 시리얼라이저
     │   │   ├── urls.py
-    │   │   ├── admin_views.py     # Admin CRUD + 미디어 업로드/삭제/정렬
-    │   │   ├── admin_serializers.py
+    │   │   ├── admin_views.py     # Admin CRUD + 미디어 업로드/삭제/정렬/유튜브
+    │   │   ├── admin_serializers.py  # 3D 모델 중복 검증 포함
     │   │   ├── admin_urls.py
     │   │   └── admin.py
     │   ├── lab/
@@ -191,6 +194,8 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | bg_color | CharField(7) | 배경 HEX 색상 (기본: `#1a1a2e`) |
 | order | PositiveIntegerField | 정렬순서 |
 
+**기본 정렬**: `order` → `name`
+
 ### Portfolio
 
 | 필드 | 타입 | 설명 |
@@ -203,7 +208,7 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | year | CharField(10) | 연도 |
 | client | CharField(100) | 클라이언트명 |
 | thumbnail | ImageField | 썸네일 |
-| model_file | CharField(20) | 3D 모델 선택 (홈 화면용) |
+| model_file | CharField(20) | 3D 모델 선택 (홈 화면용, **중복 선택 불가**) |
 | is_pinned | BooleanField | 상단 고정 여부 |
 | is_active | BooleanField | 공개 여부 |
 | order | PositiveIntegerField | 정렬순서 |
@@ -212,6 +217,8 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 
 **model_file 선택지**: `""` (선택 안함), `submarine`, `arrow`, `car`, `character`, `stamp`, `ice_cream`
 
+**model_file 중복 검증**: Admin 시리얼라이저에서 동일 model_file을 다른 포트폴리오가 이미 사용 중인 경우 `ValidationError` 발생
+
 **기본 정렬**: `-is_pinned` → `order` → `-created_at`
 
 ### PortfolioMedia
@@ -219,8 +226,9 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | portfolio | FK → Portfolio | 소속 포트폴리오 |
-| type | CharField(10) | `image` 또는 `video` |
-| file | FileField | 미디어 파일 |
+| type | CharField(10) | `image`, `video`, 또는 `youtube` |
+| file | FileField | 미디어 파일 (이미지/비디오용, youtube 타입은 blank 허용) |
+| video_url | URLField(500) | 유튜브 URL (youtube 타입 전용, 예: `https://youtu.be/xxxx`) |
 | order | PositiveIntegerField | 정렬순서 |
 
 **제한**: 포트폴리오당 최대 10개
@@ -236,6 +244,10 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | type | CharField(10) | `image` 또는 `video` |
 | is_active | BooleanField | 공개 여부 |
 | order | PositiveIntegerField | 정렬순서 |
+| created_at | DateTimeField | 생성일 (auto) |
+| updated_at | DateTimeField | 수정일 (auto) |
+
+**기본 정렬**: `order` → `-created_at`
 
 ### ContactInquiry
 
@@ -247,6 +259,8 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | message | TextField | 내용 |
 | is_read | BooleanField | 읽음 여부 |
 | created_at | DateTimeField | 문의일 (auto) |
+
+**기본 정렬**: `-created_at`
 
 ---
 
@@ -266,7 +280,7 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 |--------|----------|------|
 | GET | `/api/portfolio/` | 포트폴리오 목록 (`?category=<slug>`, `?pinned=true`) |
 | GET | `/api/portfolio/<id>/` | 포트폴리오 상세 (이전/다음 네비게이션 포함) |
-| GET | `/api/portfolio/featured/` | 상단 고정 포트폴리오 (최대 6개, 홈 3D용) |
+| GET | `/api/portfolio/featured/` | 3D 모델이 배정된 포트폴리오 (최대 6개, 홈 3D용) |
 | GET | `/api/portfolio/categories/` | 카테고리 목록 (slug 기반 lookup) |
 | GET | `/api/portfolio/categories/<slug>/` | 카테고리 상세 |
 | GET | `/api/portfolio/categories/<slug>/portfolios/` | 카테고리별 포트폴리오 |
@@ -311,7 +325,9 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | DELETE | `/api/admin/portfolios/<id>/` | 포트폴리오 삭제 |
 | POST | `/api/admin/portfolios/<id>/toggle_pinned/` | 고정 상태 토글 |
 | POST | `/api/admin/portfolios/<id>/toggle_active/` | 공개 상태 토글 |
+| GET | `/api/admin/portfolios/model_usage/` | 현재 사용 중인 3D 모델 목록 |
 | POST | `/api/admin/portfolios/<id>/upload_media/` | 미디어 업로드 (자동 타입 감지, 순서 부여) |
+| POST | `/api/admin/portfolios/<id>/add_youtube/` | 유튜브 URL 미디어 추가 (`video_url` 파라미터) |
 | DELETE | `/api/admin/portfolios/<id>/media/<media_id>/` | 미디어 삭제 |
 | POST | `/api/admin/portfolios/<id>/reorder_media/` | 미디어 순서 변경 (`media_ids` 배열) |
 
@@ -369,7 +385,17 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | logo | logo.glb | 중앙 로고 (고정, 선택 불가) |
 | field | field.glb | 바닥 플랫폼 (자동) |
 
-### 2. 포트폴리오 섹션 (PortfolioSection)
+### 2. 포트폴리오 미디어 시스템
+
+포트폴리오 상세 페이지에서 3가지 타입의 미디어를 지원합니다.
+
+| 미디어 타입 | 업로드 방식 | 설명 |
+|------------|-----------|------|
+| `image` | `upload_media` (파일 업로드) | 이미지 파일, MIME 자동 감지 |
+| `video` | `upload_media` (파일 업로드) | 비디오 파일, MIME 자동 감지 |
+| `youtube` | `add_youtube` (URL 전송) | 유튜브 링크 (`video_url` 필드에 저장) |
+
+### 3. 포트폴리오 섹션 (PortfolioSection)
 
 - **카테고리 캐러셀**: 드래그/휠 스크롤 기반 탐색
 - **부드러운 스크롤**: `requestAnimationFrame` 기반 이징 처리
@@ -379,7 +405,7 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
   - 그레이스케일 → 컬러 전환 효과
   - 좌우 그라데이션 페이드
 
-### 3. 프론트엔드 라우팅
+### 4. 프론트엔드 라우팅
 
 **Public 라우트**:
 
@@ -411,11 +437,13 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | `/admin/lab/:id/edit` | AdminLabEdit | Lab 수정 |
 | `/admin/contacts` | AdminContacts | 문의 관리 |
 
-### 4. Admin 시스템
+**레이아웃 분기**: `Home`(`/`)과 `About`(`/about`) 페이지는 상단 패딩 없이 렌더링되며, 나머지 Public 라우트는 `pt-20` 패딩이 적용됩니다.
+
+### 5. Admin 시스템
 
 **Dashboard**: 포트폴리오/Lab/문의 통계 카드, 최근 문의 5건 (읽음/안읽음), 최근 포트폴리오 5건
 
-**Portfolio 관리**: CRUD, 상단 고정 토글, 공개 상태 토글, 3D 모델 선택 (is_pinned 시), 미디어 업로드/삭제/정렬 (최대 10개), 카테고리/활성/고정/검색 필터링
+**Portfolio 관리**: CRUD, 상단 고정 토글, 공개 상태 토글, 3D 모델 선택 (중복 선택 방지 검증), 미디어 업로드/삭제/정렬 (최대 10개), 유튜브 URL 미디어 추가, 3D 모델 사용현황 조회, 카테고리/활성/고정/검색 필터링
 
 **Category 관리**: CRUD, 썸네일/배경색/슬러그 설정
 
@@ -468,6 +496,12 @@ REACT_APP_DOMAIN=http://localhost:3000
 - `http://ces2025.iptime.org:30000`
 - `https://onebyonestudio.com`, `https://www.onebyonestudio.com`
 - `https://main.d2e20hsqeo3cjt.amplifyapp.com`
+
+### ALLOWED_HOSTS
+
+- `api.onebyonestudio.com`
+- `ces2025.iptime.org`
+- `localhost`, `127.0.0.1`
 
 ---
 
@@ -558,9 +592,11 @@ if is_read in ["true", "false"]:
 
 1. **Dockerfile 프로덕션 최적화**: 현재 `runserver`로 실행 → Gunicorn/uWSGI 전환 필요
 2. **DEFAULT_PERMISSION_CLASSES**: 현재 `AllowAny` → 프로덕션에서는 `IsAuthenticated`로 변경 검토
-3. **SECRET_KEY**: 현재 하드코딩 fallback 존재 → 프로덕션에서 반드시 환경변수 설정
+3. **SECRET_KEY**: 현재 하드코딩 fallback 존재 (`django-insecure-change-this-in-production`) → 프로덕션에서 반드시 환경변수 설정
 4. **파일 업로드 검증 강화**: 현재 MIME 기반만 → 확장자 화이트리스트, 용량 제한 세분화
 5. **Pagination**: Admin 리스트에서 페이지네이션 일관성 검토
+6. **SessionAuthentication 제거 검토**: REST_FRAMEWORK에 `SessionAuthentication`이 포함되어 있으나 SPA 아키텍처에서는 불필요할 수 있음
+7. **유튜브 URL 검증 강화**: 현재 빈 문자열만 체크 → 유효한 유튜브 URL 패턴 검증 추가 필요
 
 ### 기능 개선
 
@@ -580,10 +616,10 @@ if is_read in ["true", "false"]:
 | `config/urls.py` | JWT 인증 + Dashboard + Public/Admin URL 통합 |
 | `config/views.py` | DashboardStatsView, CurrentUserView |
 | `apps/contact/admin_views.py` | 읽음 처리 POST 허용, 빈 문자열 필터 수정, 통계/전체읽음 추가 |
-| `apps/portfolio/models.py` | model_file 필드 추가 (3D 모델 선택) |
-| `apps/portfolio/serializers.py` | model_file 필드, 이전/다음 네비게이션 |
-| `apps/portfolio/admin_serializers.py` | model_file 필드, created_at 제거 |
-| `apps/portfolio/admin_views.py` | 미디어 업로드/삭제/정렬, 토글 액션, 빈 문자열 필터 수정 |
+| `apps/portfolio/models.py` | model_file 필드 추가, PortfolioMedia에 youtube 타입 및 video_url 필드 추가 |
+| `apps/portfolio/serializers.py` | model_file 필드, video_url 필드, 이전/다음 네비게이션 |
+| `apps/portfolio/admin_serializers.py` | model_file 중복 선택 방지 검증, video_url 필드, created_at 제거 |
+| `apps/portfolio/admin_views.py` | 미디어 업로드/삭제/정렬, 유튜브 URL 추가(`add_youtube`), 모델 사용현황(`model_usage`), 토글 액션, 빈 문자열 필터 수정 |
 | `apps/lab/admin_views.py` | 빈 문자열 필터 수정, toggle_active |
 
 ### Frontend
@@ -591,17 +627,38 @@ if is_read in ["true", "false"]:
 | 파일 | 변경 내용 |
 |------|----------|
 | `src/api/config.js` | JWT 인터셉터 (자동 갱신), 멀티 환경 URL |
-| `src/api/admin.js` | 전체 Admin API 함수 (인증, CRUD, 토글, 미디어, 통계) |
+| `src/api/admin.js` | 전체 Admin API 함수 (인증, CRUD, 토글, 미디어, 통계, 유튜브 추가, 모델 사용현황) |
 | `src/components/home/ThreeDSection.jsx` | 전면 리뉴얼 (조명, 로고, 카메라, API 연동) |
 | `src/components/home/PortfolioSection.jsx` | 클라이언트 로고 마퀴 추가 |
 | `src/admin/AdminRoutes.jsx` | ProtectedLayout 래핑, 전체 Admin 라우팅 |
 | `src/admin/pages/AdminDashboard.jsx` | Contacts 연동, 최근 항목 |
 | `src/admin/pages/AdminContacts.jsx` | URL 파라미터 초기 선택, 읽음/안읽음 토글 |
-| `src/admin/pages/AdminPortfolioEdit.jsx` | 3D 모델 선택 UI |
+| `src/admin/pages/AdminPortfolioEdit.jsx` | 3D 모델 선택 UI, 유튜브 미디어 추가 UI |
 | `src/admin/pages/AdminCategories.jsx` | 카테고리 CRUD |
 | `src/admin/pages/AdminLab.jsx` | Lab 프로젝트 관리 |
 | `src/admin/pages/AdminLabEdit.jsx` | Lab 프로젝트 생성/수정 |
 | `src/contexts/AuthContext.jsx` | JWT Context (로그인/로그아웃/토큰 관리) |
+
+---
+
+## 📊 코드 분석 및 변경 요약 (2026-02-25 기준)
+
+이번 README 업데이트에서 소스 코드 대비 누락·불일치 사항을 분석한 결과를 아래에 정리합니다.
+
+### 이전 README 대비 주요 변경점
+
+| # | 항목 | 이전 상태 | 현재 코드 실제 상태 |
+|---|------|----------|-------------------|
+| 1 | PortfolioMedia 타입 | `image`, `video` 2종만 기재 | `image`, `video`, **`youtube`** 3종 지원 |
+| 2 | PortfolioMedia 필드 | `file`, `order`만 기재 | **`video_url`** (URLField, max 500) 필드 추가, `file`은 `blank=True` |
+| 3 | Admin API — 유튜브 추가 | 미기재 | `POST .../add_youtube/` 엔드포인트 존재 |
+| 4 | Admin API — 모델 사용현황 | 미기재 | `GET .../model_usage/` 엔드포인트 존재 |
+| 5 | model_file 중복 검증 | 미기재 | `PortfolioAdminCreateUpdateSerializer`에서 중복 검증 로직 존재 |
+| 6 | LabProject 타임스탬프 | `created_at`, `updated_at` 미기재 | 모델에 두 필드 존재 |
+| 7 | 기술 스택 상세 버전 | `psycopg2-binary`, `PyJWT` 등 일부 패키지 누락 | 전체 패키지 및 정확한 버전 반영 |
+| 8 | 데이터 모델 기본 정렬 | Category, LabProject, ContactInquiry 정렬 미기재 | 각 모델별 Meta.ordering 반영 |
+| 9 | ALLOWED_HOSTS | 미기재 | 설정 파일 기반 목록 추가 |
+| 10 | 레이아웃 분기 | 미기재 | Home/About 페이지 상단 패딩 없는 조건 분기 문서화 |
 
 ---
 
