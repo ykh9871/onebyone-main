@@ -1,6 +1,6 @@
 # OneByOne Studio 웹 프로젝트
 
-> 최종 업데이트: 2026년 2월 25일
+> 최종 업데이트: 2026년 3월 4일
 
 ---
 
@@ -47,9 +47,12 @@
 | django-admin-sortable2 | 2.2.4 — Admin 정렬 |
 | django-storages | 1.14.6 — AWS S3 파일 스토리지 |
 | boto3 | 1.40.32 — AWS SDK |
+| botocore | 1.40.32 — boto3 코어 라이브러리 |
+| s3transfer | 0.14.0 — S3 파일 전송 |
 | Pillow | 11.3.0 — 이미지 처리 |
 | psycopg2-binary | 2.9.10 — PostgreSQL 어댑터 |
 | python-decouple | 3.8 — 환경변수 관리 |
+| requests | 2.31.0 — HTTP 클라이언트 |
 | PostgreSQL | 데이터베이스 |
 | Docker | 컨테이너화 |
 
@@ -79,30 +82,35 @@ onebyone-studio/
 │   ├── components/
 │   │   ├── home/
 │   │   │   ├── LandingSection.jsx
-│   │   │   ├── ThreeDSection.jsx      # 3D 모델 렌더링 (Three.js)
+│   │   │   ├── ThreeDSection.jsx      # 3D 모델 렌더링 (Three.js, ~1,096줄)
 │   │   │   ├── WhatWeDoSection.jsx
 │   │   │   ├── PortfolioSection.jsx   # 카테고리 캐러셀 + 클라이언트 로고
-│   │   │   └── ContactSection.jsx
+│   │   │   ├── ContactSection.jsx
+│   │   │   └── index.js
 │   │   ├── about/
-│   │   │   └── AboutSection.jsx
+│   │   │   ├── AboutSection.jsx
+│   │   │   └── index.js
 │   │   ├── Navbar.jsx
 │   │   ├── Footer.jsx
 │   │   ├── PageTransition.jsx
 │   │   ├── ScrollToTop.jsx
-│   │   └── CategoryLayout.jsx
-│   ├── pages/                     # Public 페이지
+│   │   ├── CategoryLayout.jsx
+│   │   └── index.js
+│   ├── pages/
 │   │   ├── Home.jsx
 │   │   ├── About.jsx
 │   │   ├── Portfolio.jsx
 │   │   ├── PortfolioDetail.jsx
 │   │   ├── Lab.jsx
 │   │   ├── Contact.jsx
-│   │   ├── MediaArt.jsx           # 카테고리: 미디어아트
-│   │   ├── Interactive.jsx        # 카테고리: 인터랙티브
-│   │   ├── Exhibition.jsx         # 카테고리: 전시
-│   │   └── Web.jsx                # 카테고리: 웹
-│   ├── admin/                     # Admin SPA
-│   │   ├── AdminRoutes.jsx        # Admin 라우팅 (PrivateRoute 래핑)
+│   │   ├── MediaArt.jsx
+│   │   ├── Interactive.jsx
+│   │   ├── Exhibition.jsx
+│   │   ├── Web.jsx
+│   │   └── index.js
+│   ├── admin/
+│   │   ├── AdminRoutes.jsx
+│   │   ├── index.js
 │   │   ├── components/
 │   │   │   ├── AdminLayout.jsx
 │   │   │   └── PrivateRoute.jsx
@@ -114,32 +122,38 @@ onebyone-studio/
 │   │       ├── AdminCategories.jsx
 │   │       ├── AdminLab.jsx
 │   │       ├── AdminLabEdit.jsx
-│   │       └── AdminContacts.jsx
+│   │       ├── AdminContacts.jsx
+│   │       └── index.js
 │   ├── contexts/
-│   │   └── AuthContext.jsx        # JWT 인증 Context
+│   │   └── AuthContext.jsx
 │   ├── assets/
+│   │   ├── logo.avif
+│   │   ├── logo.png
+│   │   └── smallLogo.avif
 │   ├── App.jsx
 │   ├── App.css
+│   ├── index.css
 │   └── index.js
 │
-└── onebyone-backend/              # Backend (Django)
+└── onebyone-backend/
     ├── config/
-    │   ├── settings.py            # Django 설정 (S3, JWT, CORS, DB 등)
-    │   ├── urls.py                # 루트 URL 라우팅
-    │   ├── views.py               # Dashboard 통계 + 현재 사용자 API
+    │   ├── settings.py
+    │   ├── urls.py
+    │   ├── views.py
+    │   ├── asgi.py
     │   └── wsgi.py
     ├── apps/
     │   ├── portfolio/
-    │   │   ├── models.py          # Category, Portfolio, PortfolioMedia
-    │   │   ├── views.py           # Public ViewSet (ReadOnly)
-    │   │   ├── serializers.py     # Public 시리얼라이저
+    │   │   ├── models.py
+    │   │   ├── views.py
+    │   │   ├── serializers.py
     │   │   ├── urls.py
-    │   │   ├── admin_views.py     # Admin CRUD + 미디어 업로드/삭제/정렬/유튜브
-    │   │   ├── admin_serializers.py  # 3D 모델 중복 검증 포함
+    │   │   ├── admin_views.py
+    │   │   ├── admin_serializers.py
     │   │   ├── admin_urls.py
     │   │   └── admin.py
     │   ├── lab/
-    │   │   ├── models.py          # LabProject
+    │   │   ├── models.py
     │   │   ├── views.py
     │   │   ├── serializers.py
     │   │   ├── urls.py
@@ -148,15 +162,15 @@ onebyone-studio/
     │   │   ├── admin_urls.py
     │   │   └── admin.py
     │   └── contact/
-    │       ├── models.py          # ContactInquiry
-    │       ├── views.py           # 문의 등록 (Public)
+    │       ├── models.py
+    │       ├── views.py
     │       ├── serializers.py
     │       ├── urls.py
-    │       ├── admin_views.py     # 문의 관리 + 읽음/통계
+    │       ├── admin_views.py
     │       ├── admin_serializers.py
     │       ├── admin_urls.py
     │       └── admin.py
-    ├── mediafiles/                 # 로컬 미디어 저장소 (USE_S3=false 시)
+    ├── mediafiles/
     ├── staticfiles/
     ├── requirements.txt
     ├── Dockerfile
@@ -174,10 +188,12 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | Access Token 수명 | 12시간 |
 | Refresh Token 수명 | 7일 |
 | Refresh Rotation | 활성화 (갱신 시 새 Refresh 발급) |
-| Blacklist | 활성화 (이전 Refresh 무효화) |
+| Blacklist | 설정값 활성화 ⚠️ 앱 미등록으로 실제 미동작 |
 | Header 형식 | `Authorization: Bearer <token>` |
 
-**프론트엔드 토큰 흐름**: Axios 인터셉터가 모든 요청에 자동으로 Bearer 토큰을 첨부하며, 401 응답 시 Refresh Token으로 자동 갱신을 시도합니다. 갱신 실패 시 `/admin/login`으로 리다이렉트됩니다.
+**프론트엔드 토큰 흐름**: Axios 인터셉터가 모든 요청에 자동으로 Bearer 토큰을 첨부하며, 401 응답 시 Refresh Token으로 자동 갱신을 시도합니다. 갱신 실패 시 localStorage 토큰 제거 후 `/admin/login`으로 리다이렉트됩니다.
+
+> ⚠️ **알려진 이슈**: `BLACKLIST_AFTER_ROTATION: True`가 설정되어 있으나 `rest_framework_simplejwt.token_blacklist`가 `INSTALLED_APPS`에 포함되어 있지 않아 블랙리스트가 실제로 동작하지 않습니다. → **향후 개선 사항** 참조
 
 ---
 
@@ -190,9 +206,9 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | name | CharField(100) | 한글 카테고리명 |
 | name_en | CharField(100) | 영문 카테고리명 |
 | slug | SlugField (unique) | URL 식별자 |
-| thumbnail | ImageField | 카테고리 대표 이미지 |
+| thumbnail | ImageField | 카테고리 대표 이미지 (`upload_to="category/"`, blank 허용) |
 | bg_color | CharField(7) | 배경 HEX 색상 (기본: `#1a1a2e`) |
-| order | PositiveIntegerField | 정렬순서 |
+| order | PositiveIntegerField | 정렬순서 (기본: 0) |
 
 **기본 정렬**: `order` → `name`
 
@@ -201,23 +217,23 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | 필드 | 타입 | 설명 |
 |------|------|------|
 | title | CharField(200) | 제목 |
-| subtitle | CharField(200) | 부제목 |
+| subtitle | CharField(200) | 부제목 (blank 허용) |
 | description | TextField | 설명 |
-| category | FK → Category | 카테고리 |
-| keywords | JSONField | 키워드 배열 |
+| category | FK → Category | 카테고리 (`on_delete=CASCADE`) |
+| keywords | JSONField | 키워드 배열 (기본: `[]`) |
 | year | CharField(10) | 연도 |
-| client | CharField(100) | 클라이언트명 |
-| thumbnail | ImageField | 썸네일 |
+| client | CharField(100) | 클라이언트명 (blank 허용) |
+| thumbnail | ImageField | 썸네일 (`upload_to="portfolio/thumbnails/"`) |
 | model_file | CharField(20) | 3D 모델 선택 (홈 화면용, **중복 선택 불가**) |
-| is_pinned | BooleanField | 상단 고정 여부 |
-| is_active | BooleanField | 공개 여부 |
-| order | PositiveIntegerField | 정렬순서 |
-| created_at | DateTimeField | 생성일 (auto) |
-| updated_at | DateTimeField | 수정일 (auto) |
+| is_pinned | BooleanField | 상단 고정 여부 (기본: False) |
+| is_active | BooleanField | 공개 여부 (기본: True) |
+| order | PositiveIntegerField | 정렬순서 (기본: 0) |
+| created_at | DateTimeField | 생성일 (auto_now_add) |
+| updated_at | DateTimeField | 수정일 (auto_now) |
 
 **model_file 선택지**: `""` (선택 안함), `submarine`, `arrow`, `car`, `character`, `stamp`, `ice_cream`
 
-**model_file 중복 검증**: Admin 시리얼라이저에서 동일 model_file을 다른 포트폴리오가 이미 사용 중인 경우 `ValidationError` 발생
+**model_file 중복 검증**: `PortfolioAdminCreateUpdateSerializer`에서 동일 model_file을 다른 포트폴리오가 이미 사용 중인 경우 `ValidationError` 발생 (수정 시 자기 자신 제외)
 
 **기본 정렬**: `-is_pinned` → `order` → `-created_at`
 
@@ -225,13 +241,14 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 
 | 필드 | 타입 | 설명 |
 |------|------|------|
-| portfolio | FK → Portfolio | 소속 포트폴리오 |
+| portfolio | FK → Portfolio | 소속 포트폴리오 (`on_delete=CASCADE`) |
 | type | CharField(10) | `image`, `video`, 또는 `youtube` |
-| file | FileField | 미디어 파일 (이미지/비디오용, youtube 타입은 blank 허용) |
-| video_url | URLField(500) | 유튜브 URL (youtube 타입 전용, 예: `https://youtu.be/xxxx`) |
-| order | PositiveIntegerField | 정렬순서 |
+| file | FileField | 미디어 파일 (`upload_to="portfolio/media/"`, blank 허용) |
+| video_url | URLField(500) | 유튜브 URL (youtube 타입 전용, `youtube.com/watch?v=` 또는 `youtu.be/` 형식) |
+| order | PositiveIntegerField | 정렬순서 (기본: 0) |
 
-**제한**: 포트폴리오당 최대 10개
+**제한**: 포트폴리오당 최대 10개  
+**기본 정렬**: `order`
 
 ### LabProject
 
@@ -240,14 +257,16 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | title | CharField(200) | 제목 |
 | description | TextField | 설명 |
 | date | CharField(20) | 날짜 표시 (예: `2024.12`) |
-| thumbnail | FileField | 썸네일 |
-| type | CharField(10) | `image` 또는 `video` |
-| is_active | BooleanField | 공개 여부 |
-| order | PositiveIntegerField | 정렬순서 |
-| created_at | DateTimeField | 생성일 (auto) |
-| updated_at | DateTimeField | 수정일 (auto) |
+| thumbnail | FileField | 썸네일 (`upload_to="lab/"`) |
+| type | CharField(10) | `image` 또는 `video` (기본: `image`) |
+| is_active | BooleanField | 공개 여부 (기본: True) |
+| order | PositiveIntegerField | 정렬순서 (기본: 0) |
+| created_at | DateTimeField | 생성일 (auto_now_add) |
+| updated_at | DateTimeField | 수정일 (auto_now) |
 
 **기본 정렬**: `order` → `-created_at`
+
+> **참고**: Public API(`LabProjectSerializer`)에서는 `id`, `title`, `description`, `date`, `thumbnail`, `type`만 노출됩니다. `is_active`, `order`, `created_at`, `updated_at`는 Admin API에서만 접근 가능합니다.
 
 ### ContactInquiry
 
@@ -257,8 +276,8 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | email | EmailField | 이메일 |
 | subject | CharField(200) | 제목 |
 | message | TextField | 내용 |
-| is_read | BooleanField | 읽음 여부 |
-| created_at | DateTimeField | 문의일 (auto) |
+| is_read | BooleanField | 읽음 여부 (기본: False) |
+| created_at | DateTimeField | 문의일 (auto_now_add) |
 
 **기본 정렬**: `-created_at`
 
@@ -278,7 +297,7 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 
 | Method | Endpoint | 설명 |
 |--------|----------|------|
-| GET | `/api/portfolio/` | 포트폴리오 목록 (`?category=<slug>`, `?pinned=true`) |
+| GET | `/api/portfolio/` | 포트폴리오 목록 (`?category=<slug>`, `?pinned=true`, `?search=`, `?ordering=`) |
 | GET | `/api/portfolio/<id>/` | 포트폴리오 상세 (이전/다음 네비게이션 포함) |
 | GET | `/api/portfolio/featured/` | 3D 모델이 배정된 포트폴리오 (최대 6개, 홈 3D용) |
 | GET | `/api/portfolio/categories/` | 카테고리 목록 (slug 기반 lookup) |
@@ -289,7 +308,7 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 
 | Method | Endpoint | 설명 |
 |--------|----------|------|
-| GET | `/api/lab/` | Lab 프로젝트 목록 |
+| GET | `/api/lab/` | Lab 프로젝트 목록 (is_active=True만) |
 | GET | `/api/lab/<id>/` | Lab 프로젝트 상세 |
 
 ### Public — Contact
@@ -302,7 +321,7 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 
 | Method | Endpoint | 설명 |
 |--------|----------|------|
-| GET | `/api/admin/dashboard/` | 통합 대시보드 통계 (포트폴리오, Lab, 문의, 최근 항목) |
+| GET | `/api/admin/dashboard/` | 통합 대시보드 통계 (포트폴리오, 카테고리, Lab, 문의, 최근 항목) |
 
 ### Admin — Category 🔒
 
@@ -362,7 +381,7 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 
 ### 1. 홈페이지 3D 섹션 (ThreeDSection)
 
-약 1,050줄의 Three.js 기반 인터랙티브 3D 씬입니다.
+약 1,096줄의 Three.js 기반 인터랙티브 3D 씬입니다.
 
 - **6개 포트폴리오 모델**: API에서 `featured` 포트폴리오의 `model_file` 기반으로 동적 로딩
 - **중앙 로고 모델**: `logo.glb` 고정 배치
@@ -422,7 +441,7 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | `/category/exhibition` | Exhibition | 카테고리: 전시 |
 | `/category/web` | Web | 카테고리: 웹 |
 
-**Admin 라우트** (`/admin/*` — `AuthProvider` + `PrivateRoute` 래핑):
+**Admin 라우트** (`/admin/*` — `AuthProvider` + `ProtectedLayout(PrivateRoute + AdminLayout)` 래핑):
 
 | 경로 | 페이지 | 설명 |
 |------|--------|------|
@@ -436,12 +455,13 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 | `/admin/lab/new` | AdminLabEdit | Lab 생성 |
 | `/admin/lab/:id/edit` | AdminLabEdit | Lab 수정 |
 | `/admin/contacts` | AdminContacts | 문의 관리 |
+| `/admin/*` (기타) | — | `/admin`으로 리다이렉트 |
 
 **레이아웃 분기**: `Home`(`/`)과 `About`(`/about`) 페이지는 상단 패딩 없이 렌더링되며, 나머지 Public 라우트는 `pt-20` 패딩이 적용됩니다.
 
 ### 5. Admin 시스템
 
-**Dashboard**: 포트폴리오/Lab/문의 통계 카드, 최근 문의 5건 (읽음/안읽음), 최근 포트폴리오 5건
+**Dashboard**: 포트폴리오(total/active/inactive/pinned), 카테고리(total), Lab(total/active/inactive), 문의(total/unread/read) 통계, 최근 문의 5건, 최근 포트폴리오 5건
 
 **Portfolio 관리**: CRUD, 상단 고정 토글, 공개 상태 토글, 3D 모델 선택 (중복 선택 방지 검증), 미디어 업로드/삭제/정렬 (최대 10개), 유튜브 URL 미디어 추가, 3D 모델 사용현황 조회, 카테고리/활성/고정/검색 필터링
 
@@ -450,6 +470,19 @@ JWT (JSON Web Token) 기반 인증을 사용합니다.
 **Lab 관리**: CRUD, 공개 상태 토글, 미디어 타입(이미지/영상) 필터링
 
 **Contact 관리**: 목록 조회, 읽음/안읽음 처리, 전체 읽음, 삭제, 통계, 검색
+
+### 6. Django Admin 인터페이스
+
+Django 내장 Admin 사이트가 커스터마이징되어 있습니다:
+
+- **사이트 헤더**: "OneByOne Studio 관리자"
+- **사이트 타이틀**: "OneByOne Admin"
+- **인덱스 타이틀**: "대시보드"
+- **Portfolio/Category/Lab**: `SortableAdminMixin`(adminsortable2) 기반 드래그 정렬
+- **PortfolioMedia**: 인라인 관리 (`SortableInlineAdminMixin`, max 10개)
+- **ContactInquiry**: 읽기 전용 (admin에서 직접 추가 불가), 읽음/안읽음 일괄 액션
+
+> ⚠️ **알려진 이슈**: Django Admin의 `PortfolioMediaInline`에 `video_url` 필드가 포함되어 있지 않아 YouTube 타입 미디어를 Django Admin에서 관리할 수 없습니다.
 
 ---
 
@@ -497,11 +530,31 @@ REACT_APP_DOMAIN=http://localhost:3000
 - `https://onebyonestudio.com`, `https://www.onebyonestudio.com`
 - `https://main.d2e20hsqeo3cjt.amplifyapp.com`
 
+### CSRF_TRUSTED_ORIGINS
+
+- `http://localhost:3000`
+- `http://ces2025.iptime.org:30000`
+- `https://onebyonestudio.com`, `https://www.onebyonestudio.com`
+- `https://main.d2e20hsqeo3cjt.amplifyapp.com`
+
 ### ALLOWED_HOSTS
 
 - `api.onebyonestudio.com`
 - `ces2025.iptime.org`
 - `localhost`, `127.0.0.1`
+
+### 국제화 및 타임존
+
+| 설정 | 값 |
+|------|-----|
+| LANGUAGE_CODE | `ko-kr` |
+| TIME_ZONE | `Asia/Seoul` |
+| USE_I18N | True |
+| USE_TZ | True |
+
+### 로깅 설정
+
+`onebyone.log` 파일에 INFO 레벨 이상 기록, 콘솔에 DEBUG 레벨 출력. 로거 네임스페이스: `apps`
 
 ---
 
@@ -588,21 +641,35 @@ if is_read in ["true", "false"]:
 
 ## 🔮 향후 개선 사항
 
-### 기술 부채 및 보안
+### 🚨 Critical — 즉시 수정 필요
 
-1. **Dockerfile 프로덕션 최적화**: 현재 `runserver`로 실행 → Gunicorn/uWSGI 전환 필요
-2. **DEFAULT_PERMISSION_CLASSES**: 현재 `AllowAny` → 프로덕션에서는 `IsAuthenticated`로 변경 검토
-3. **SECRET_KEY**: 현재 하드코딩 fallback 존재 (`django-insecure-change-this-in-production`) → 프로덕션에서 반드시 환경변수 설정
-4. **파일 업로드 검증 강화**: 현재 MIME 기반만 → 확장자 화이트리스트, 용량 제한 세분화
-5. **Pagination**: Admin 리스트에서 페이지네이션 일관성 검토
-6. **SessionAuthentication 제거 검토**: REST_FRAMEWORK에 `SessionAuthentication`이 포함되어 있으나 SPA 아키텍처에서는 불필요할 수 있음
-7. **유튜브 URL 검증 강화**: 현재 빈 문자열만 체크 → 유효한 유튜브 URL 패턴 검증 추가 필요
+1. **JWT Blacklist 미동작**: `BLACKLIST_AFTER_ROTATION: True` 설정이나 `rest_framework_simplejwt.token_blacklist`가 `INSTALLED_APPS`에 없음. 이전 Refresh Token이 무효화되지 않아 토큰 탈취 시 보안 취약점 발생.
+   - **해결**: `INSTALLED_APPS`에 `"rest_framework_simplejwt.token_blacklist"` 추가 후 `python manage.py migrate` 실행
 
-### 기능 개선
+2. **SECRET_KEY 하드코딩 fallback**: `django-insecure-change-this-in-production` fallback이 존재하여, 환경변수 미설정 시 insecure 키로 실행됨.
+   - **해결**: fallback 제거 또는 프로덕션에서 예외 발생하도록 변경
 
-1. **3D 섹션**: 로고 모델 애니메이션 추가, 모바일 터치 인터랙션 개선
-2. **Admin**: 포트폴리오 미리보기, 드래그 앤 드롭 정렬
-3. **성능**: 3D 모델 Draco 압축, 이미지 WebP 변환, 코드 스플리팅
+### ⚠️ High — 보안 및 안정성
+
+3. **Dockerfile 프로덕션 최적화**: 현재 `runserver`로 실행 → Gunicorn/uWSGI 전환 필요
+4. **DEFAULT_PERMISSION_CLASSES**: 현재 `AllowAny` → 프로덕션에서는 `IsAuthenticated`로 변경 검토
+5. **파일 업로드 검증 강화**: 현재 MIME 기반만 → 확장자 화이트리스트, 용량 제한 세분화
+6. **유튜브 URL 검증 강화**: 현재 빈 문자열만 체크 → 유효한 유튜브 URL 패턴 검증 추가 필요
+7. **SessionAuthentication 제거 검토**: `REST_FRAMEWORK`에 `SessionAuthentication`이 포함되어 있으나 SPA 아키텍처에서는 불필요
+
+### 📋 Medium — 코드 품질
+
+8. **Django Admin PortfolioMediaInline**: `video_url` 필드 누락으로 YouTube 미디어 Django Admin 관리 불가
+9. **CategoryAdminViewSet.get_queryset() 카운트 불일치**: 클래스 레벨 queryset은 `is_active=True` 필터, `get_queryset()`은 전체 카운트 반환
+10. **api/config.js 미사용 export**: `put` 함수가 export되나 admin.js에서는 `api.patch()` 직접 사용, `patch` 헬퍼 미정의
+11. **withCredentials 불일치**: Axios `withCredentials: false` vs Django `CORS_ALLOW_CREDENTIALS = True`
+12. **Pagination 일관성**: Admin 리스트 페이지네이션 일관성 검토
+
+### 🎨 Low — 기능 개선
+
+13. **3D 섹션**: 로고 모델 애니메이션 추가, 모바일 터치 인터랙션 개선
+14. **Admin**: 포트폴리오 미리보기, 드래그 앤 드롭 정렬
+15. **성능**: 3D 모델 Draco 압축, 이미지 WebP 변환, 코드 스플리팅
 
 ---
 
@@ -613,8 +680,8 @@ if is_read in ["true", "false"]:
 | 파일 | 변경 내용 |
 |------|----------|
 | `config/settings.py` | Django 5.x 스토리지 설정, S3/CloudFront, JWT, CORS, 로깅 |
-| `config/urls.py` | JWT 인증 + Dashboard + Public/Admin URL 통합 |
-| `config/views.py` | DashboardStatsView, CurrentUserView |
+| `config/urls.py` | JWT 인증 + Dashboard + Public/Admin URL 통합, Django Admin 사이트 커스터마이징 |
+| `config/views.py` | DashboardStatsView (포트폴리오/카테고리/Lab/문의 통계 + 최근 항목), CurrentUserView |
 | `apps/contact/admin_views.py` | 읽음 처리 POST 허용, 빈 문자열 필터 수정, 통계/전체읽음 추가 |
 | `apps/portfolio/models.py` | model_file 필드 추가, PortfolioMedia에 youtube 타입 및 video_url 필드 추가 |
 | `apps/portfolio/serializers.py` | model_file 필드, video_url 필드, 이전/다음 네비게이션 |
@@ -626,11 +693,11 @@ if is_read in ["true", "false"]:
 
 | 파일 | 변경 내용 |
 |------|----------|
-| `src/api/config.js` | JWT 인터셉터 (자동 갱신), 멀티 환경 URL |
+| `src/api/config.js` | JWT 인터셉터 (자동 갱신), 멀티 환경 URL, get/post/put/del 헬퍼 |
 | `src/api/admin.js` | 전체 Admin API 함수 (인증, CRUD, 토글, 미디어, 통계, 유튜브 추가, 모델 사용현황) |
-| `src/components/home/ThreeDSection.jsx` | 전면 리뉴얼 (조명, 로고, 카메라, API 연동) |
+| `src/components/home/ThreeDSection.jsx` | 전면 리뉴얼 (조명, 로고, 카메라, API 연동) — 1,096줄 |
 | `src/components/home/PortfolioSection.jsx` | 클라이언트 로고 마퀴 추가 |
-| `src/admin/AdminRoutes.jsx` | ProtectedLayout 래핑, 전체 Admin 라우팅 |
+| `src/admin/AdminRoutes.jsx` | ProtectedLayout 래핑, 전체 Admin 라우팅, 404 리다이렉트 |
 | `src/admin/pages/AdminDashboard.jsx` | Contacts 연동, 최근 항목 |
 | `src/admin/pages/AdminContacts.jsx` | URL 파라미터 초기 선택, 읽음/안읽음 토글 |
 | `src/admin/pages/AdminPortfolioEdit.jsx` | 3D 모델 선택 UI, 유튜브 미디어 추가 UI |
@@ -641,24 +708,29 @@ if is_read in ["true", "false"]:
 
 ---
 
-## 📊 코드 분석 및 변경 요약 (2026-02-25 기준)
+## 📊 코드 분석 및 변경 요약 (2026-03-04 기준)
 
-이번 README 업데이트에서 소스 코드 대비 누락·불일치 사항을 분석한 결과를 아래에 정리합니다.
+소스 코드 전수 분석을 통해 이전 README(2026-02-25) 대비 확인된 불일치 및 누락 사항입니다.
 
 ### 이전 README 대비 주요 변경점
 
 | # | 항목 | 이전 상태 | 현재 코드 실제 상태 |
 |---|------|----------|-------------------|
-| 1 | PortfolioMedia 타입 | `image`, `video` 2종만 기재 | `image`, `video`, **`youtube`** 3종 지원 |
-| 2 | PortfolioMedia 필드 | `file`, `order`만 기재 | **`video_url`** (URLField, max 500) 필드 추가, `file`은 `blank=True` |
-| 3 | Admin API — 유튜브 추가 | 미기재 | `POST .../add_youtube/` 엔드포인트 존재 |
-| 4 | Admin API — 모델 사용현황 | 미기재 | `GET .../model_usage/` 엔드포인트 존재 |
-| 5 | model_file 중복 검증 | 미기재 | `PortfolioAdminCreateUpdateSerializer`에서 중복 검증 로직 존재 |
-| 6 | LabProject 타임스탬프 | `created_at`, `updated_at` 미기재 | 모델에 두 필드 존재 |
-| 7 | 기술 스택 상세 버전 | `psycopg2-binary`, `PyJWT` 등 일부 패키지 누락 | 전체 패키지 및 정확한 버전 반영 |
-| 8 | 데이터 모델 기본 정렬 | Category, LabProject, ContactInquiry 정렬 미기재 | 각 모델별 Meta.ordering 반영 |
-| 9 | ALLOWED_HOSTS | 미기재 | 설정 파일 기반 목록 추가 |
-| 10 | 레이아웃 분기 | 미기재 | Home/About 페이지 상단 패딩 없는 조건 분기 문서화 |
+| 1 | JWT Blacklist | "활성화" 표기 | `token_blacklist` 앱 미등록 — **실제 미동작 (보안 이슈)** |
+| 2 | ThreeDSection 줄 수 | "약 1,050줄" | **1,096줄** |
+| 3 | PortfolioMedia video_url 형식 | `https://youtu.be/xxxx`만 기재 | `youtube.com/watch?v=` 및 `youtu.be/` **두 형식 모두 지원** |
+| 4 | CSRF_TRUSTED_ORIGINS | 미기재 | 5개 Origin 설정 확인 및 문서화 |
+| 5 | Django Admin 커스터마이징 | 미기재 | 사이트 헤더/타이틀/인덱스 타이틀 및 Sortable 설정 문서화 |
+| 6 | Django Admin PortfolioMediaInline | 미기재 | `video_url` 필드 누락 이슈 문서화 |
+| 7 | requirements.txt 패키지 | 일부 간접 의존성 누락 | `botocore`, `s3transfer`, `requests` 등 반영 |
+| 8 | CategoryAdminViewSet 카운트 | 미기재 | `get_queryset()` 전체 카운트 vs 클래스 레벨 active 카운트 불일치 문서화 |
+| 9 | 국제화/타임존/로깅 | 미기재 | `ko-kr`, `Asia/Seoul`, 파일 로깅 설정 문서화 |
+| 10 | Admin 라우트 404 처리 | 미기재 | `Route path="*"` → `/admin` 리다이렉트 문서화 |
+| 11 | config.js 헬퍼 불일치 | 미기재 | `put` 미사용, `patch` 미정의 이슈 문서화 |
+| 12 | Public Lab API 응답 필드 | 미기재 | 6개 필드만 노출 명시 |
+| 13 | Dashboard 통계 상세 | 간략 기재 | 카테고리 통계, 포트폴리오 inactive 포함 명시 |
+| 14 | assets 파일 목록 | 미기재 | `logo.avif`, `logo.png`, `smallLogo.avif` |
+| 15 | 향후 개선 우선순위 | 평면 나열 | Critical/High/Medium/Low 우선순위 분류 |
 
 ---
 
